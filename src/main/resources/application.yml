@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: financetrack
+  datasource:
+    init:
+      admin:
+        username: ${DATASOURCE_ADMIN_USERNAME}
+        password: ${DATASOURCE_ADMIN_PASSWORD}
+
+jwt:
+  secret: 12342dee23ddv34cs32cr22c@1232421ds$wqd212ˆ&ˆq12(*122#%ˆ32@12313
+  issuer: financetrack
+  expiration: 7776000
