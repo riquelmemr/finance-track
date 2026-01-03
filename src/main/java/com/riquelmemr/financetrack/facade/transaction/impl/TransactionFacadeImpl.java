@@ -1,6 +1,7 @@
 package com.riquelmemr.financetrack.facade.transaction.impl;
 
 import com.riquelmemr.financetrack.dto.request.CreateTransactionRequest;
+import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
 import com.riquelmemr.financetrack.dto.response.TransactionPageResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionResponse;
 import com.riquelmemr.financetrack.facade.transaction.TransactionFacade;
@@ -30,9 +31,9 @@ public class TransactionFacadeImpl implements TransactionFacade {
     }
 
     @Override
-    public TransactionPageResponse findAll(int page, int pageSize) {
+    public TransactionPageResponse findAll(TransactionFilterRequest filterRequest, int page, int pageSize) {
         UserModel user = sessionService.getCurrentUser();
-        Page<TransactionModel> transactions = transactionService.findAll(user, page, pageSize);
+        Page<TransactionModel> transactions = transactionService.findAll(user, filterRequest, page, pageSize);
         return transactionPageResponseConverter.convert(transactions);
     }
 }

@@ -1,4 +1,4 @@
-package com.riquelmemr.financetrack.data;
+package com.riquelmemr.financetrack.security.userdetails;
 
 import com.riquelmemr.financetrack.model.UserModel;
 import lombok.Getter;

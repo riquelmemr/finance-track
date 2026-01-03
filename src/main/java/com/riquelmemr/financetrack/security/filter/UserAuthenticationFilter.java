@@ -1,7 +1,7 @@
 package com.riquelmemr.financetrack.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.riquelmemr.financetrack.data.UserDetailsImpl;
+import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
 import com.riquelmemr.financetrack.exception.ModelNotFoundException;
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.service.accesstoken.AccessTokenService;

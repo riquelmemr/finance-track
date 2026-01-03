@@ -1,6 +1,6 @@
 package com.riquelmemr.financetrack.service.auth.impl;
 
-import com.riquelmemr.financetrack.data.UserDetailsImpl;
+import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.repository.UserRepository;
 import com.riquelmemr.financetrack.service.auth.AuthService;

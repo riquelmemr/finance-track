@@ -1,6 +1,7 @@
 package com.riquelmemr.financetrack.controller;
 
 import com.riquelmemr.financetrack.dto.request.CreateTransactionRequest;
+import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
 import com.riquelmemr.financetrack.dto.response.DataWrapperResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionPageResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionResponse;
@@ -32,10 +33,11 @@ public class TransactionController extends BaseController {
     @Secured("ROLE_BASIC")
     @GetMapping
     public ResponseEntity<DataWrapperResponse<TransactionPageResponse>> findAll(
+            TransactionFilterRequest filter,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "pageSize", defaultValue = "25") int pageSize)
-    {
-        TransactionPageResponse pageResponse = transactionFacade.findAll(page, pageSize);
+            @RequestParam(value = "pageSize", defaultValue = "25") int pageSize
+    ) {
+        TransactionPageResponse pageResponse = transactionFacade.findAll(filter, page, pageSize);
         return handleResponse(HttpStatus.OK, pageResponse, TRANSACTIONS_FOUND_SUCCESSFULLY_MESSAGE);
     }
 }

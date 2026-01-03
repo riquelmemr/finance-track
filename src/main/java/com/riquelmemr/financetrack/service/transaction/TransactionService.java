@@ -1,6 +1,7 @@
 package com.riquelmemr.financetrack.service.transaction;
 
 import com.riquelmemr.financetrack.dto.request.CreateTransactionRequest;
+import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
 import com.riquelmemr.financetrack.model.TransactionModel;
 import com.riquelmemr.financetrack.model.UserModel;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,7 @@ public interface TransactionService {
 
     TransactionModel create(CreateTransactionRequest request, UserModel user);
 
-    Page<TransactionModel> findAll(UserModel user, int page, int pageSize);
+    Page<TransactionModel> findAll(UserModel user, TransactionFilterRequest filterRequest, int page, int pageSize);
 
     BigDecimal calculateBalance();
 }

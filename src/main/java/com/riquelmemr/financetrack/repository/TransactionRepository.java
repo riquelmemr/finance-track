@@ -1,17 +1,15 @@
 package com.riquelmemr.financetrack.repository;
 
 import com.riquelmemr.financetrack.model.TransactionModel;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 
-public interface TransactionRepository extends JpaRepository<TransactionModel, Long> {
-
-    Page<TransactionModel> findAllByUserId(Long userId, Pageable pageable);
+public interface TransactionRepository
+        extends JpaRepository<TransactionModel, Long>, JpaSpecificationExecutor<TransactionModel> {
 
     @Query("""
     SELECT COALESCE(SUM(

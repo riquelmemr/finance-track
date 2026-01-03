@@ -1,6 +1,6 @@
 package com.riquelmemr.financetrack.facade.auth.impl;
 
-import com.riquelmemr.financetrack.data.UserDetailsImpl;
+import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
 import com.riquelmemr.financetrack.dto.request.AuthRequest;
 import com.riquelmemr.financetrack.dto.response.AuthResponse;
 import com.riquelmemr.financetrack.facade.auth.AuthFacade;
