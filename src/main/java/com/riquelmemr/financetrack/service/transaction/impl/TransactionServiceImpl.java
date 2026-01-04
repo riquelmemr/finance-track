@@ -37,7 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionModel create(CreateTransactionRequest request, UserModel user) {
-        CategoryModel category = categoryService.findByCodeAndUserId(request.getCategoryCode(), user.getId())
+        CategoryModel category = categoryService.findByCodeAndUser(request.getCategoryCode(), user)
                 .orElseThrow(() ->
                         new ModelNotFoundException("Category with code " + request.getCategoryCode() + " not found.")
                 );

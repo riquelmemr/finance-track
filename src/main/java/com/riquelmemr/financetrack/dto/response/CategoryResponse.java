@@ -3,7 +3,7 @@ package com.riquelmemr.financetrack.dto.response;
 import lombok.Data;
 
 @Data
-public class CreateCategoryResponse {
+public class CategoryResponse {
     private String code;
     private String name;
     private String description;

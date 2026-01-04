@@ -8,8 +8,10 @@ import com.riquelmemr.financetrack.repository.CategoryRepository;
 import com.riquelmemr.financetrack.service.category.CategoryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,7 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryModel create(CreateCategoryRequest request, UserModel user) {
-        Optional<CategoryModel> categoryModelOpt = categoryRepository.findByCodeAndUserId(request.getCode(), user.getId());
+        Optional<CategoryModel> categoryModelOpt = categoryRepository.findByCodeAndUser(request.getCode(), user);
 
         if (categoryModelOpt.isPresent()) {
             throw new ModelAlreadyExistsException("Category already exists with code " + request.getCode());
@@ -38,7 +40,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<CategoryModel> findByCodeAndUserId(String code, Long userId) {
-        return categoryRepository.findByCodeAndUserId(code, userId);
+    public Optional<CategoryModel> findByCodeAndUser(String code, UserModel user) {
+        return categoryRepository.findByCodeAndUser(code, user);
+    }
+
+    @Override
+    public List<CategoryModel> findAllByUser(UserModel user, int page, int pageSize) {
+        return categoryRepository.findAllByUser(user, PageRequest.of(page, pageSize));
     }
 }
