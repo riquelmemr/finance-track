@@ -4,10 +4,10 @@ spring:
   datasource:
     init:
       admin:
-        username: ${DATASOURCE_ADMIN_USERNAME}
-        password: ${DATASOURCE_ADMIN_PASSWORD}
+        username: ${DATASOURCE_ADMIN_USERNAME:admin}
+        password: ${DATASOURCE_ADMIN_PASSWORD:nimda}
 
 jwt:
-  secret: 12342dee23ddv34cs32cr22c@1232421ds$wqd212ˆ&ˆq12(*122#%ˆ32@12313
+  secret: Kc_eXseIh7h5Lc$>KTHPP/U)/qZ-~<f?9SE*u~lW
   issuer: financetrack
   expiration: 7776000

@@ -1,17 +1,20 @@
 package com.riquelmemr.financetrack.service.category.impl;
 
+import com.riquelmemr.financetrack.dto.request.CategoryFilterRequest;
 import com.riquelmemr.financetrack.dto.request.CreateCategoryRequest;
 import com.riquelmemr.financetrack.exception.ModelAlreadyExistsException;
 import com.riquelmemr.financetrack.model.CategoryModel;
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.repository.CategoryRepository;
 import com.riquelmemr.financetrack.service.category.CategoryService;
+import com.riquelmemr.financetrack.specification.impl.CategorySpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +22,7 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategorySpecification categorySpecification;
 
     @Override
     @Transactional
@@ -45,7 +49,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryModel> findAllByUser(UserModel user, int page, int pageSize) {
-        return categoryRepository.findAllByUser(user, PageRequest.of(page, pageSize));
+    public Page<CategoryModel> findAll(UserModel user, CategoryFilterRequest filterRequest, int page, int pageSize) {
+        filterRequest.setUser(user);
+
+        Specification<CategoryModel> spec = categorySpecification.toSpecification(filterRequest);
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
+
+        return categoryRepository.findAll(spec, pageRequest);
     }
 }

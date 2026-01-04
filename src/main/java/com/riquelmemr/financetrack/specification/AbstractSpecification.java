@@ -14,6 +14,12 @@ public abstract class AbstractSpecification<T, F> implements SpecificationFilter
                 value == null ? null : cb.equal(root.get(field).get(subfield), value);
     }
 
+    protected Specification<T> like(String field, String value) {
+        return (root, query, cb) ->
+                (value == null || value.isBlank()) ? null : cb.like(
+                        cb.lower(root.get(field)), "%" + value.toLowerCase() + "%");
+    }
+
     protected <V extends Comparable<? super V>> Specification<T> greaterThanOrEqualTo(String field, V value) {
         return (root, query, cb) ->
                 value == null ? null : cb.greaterThanOrEqualTo(root.get(field), value);

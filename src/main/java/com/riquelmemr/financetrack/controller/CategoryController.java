@@ -1,6 +1,8 @@
 package com.riquelmemr.financetrack.controller;
 
+import com.riquelmemr.financetrack.dto.request.CategoryFilterRequest;
 import com.riquelmemr.financetrack.dto.request.CreateCategoryRequest;
+import com.riquelmemr.financetrack.dto.response.CategoryPageResponse;
 import com.riquelmemr.financetrack.dto.response.CategoryResponse;
 import com.riquelmemr.financetrack.dto.response.DataWrapperResponse;
 import com.riquelmemr.financetrack.facade.category.CategoryFacade;
@@ -10,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
@@ -32,11 +32,12 @@ public class CategoryController extends BaseController {
 
     @Secured("ROLE_BASIC")
     @GetMapping
-    public ResponseEntity<DataWrapperResponse<List<CategoryResponse>>> findAll(
+    public ResponseEntity<DataWrapperResponse<CategoryPageResponse>> findAll(
+            CategoryFilterRequest filter,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "pageSize", defaultValue = "25") int pageSize
     ) {
-        List<CategoryResponse> response = categoryFacade.findAll(page, pageSize);
+        CategoryPageResponse response = categoryFacade.findAll(filter, page, pageSize);
         return handleResponse(HttpStatus.OK, response, CATEGORIES_FOUND_SUCCESSFULLY_MESSAGE);
     }
 }
