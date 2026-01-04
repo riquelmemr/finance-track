@@ -55,7 +55,7 @@ public class InitializerConfig implements CommandLineRunner {
             }
         }
 
-        System.out.println("Synchronized roles: " + roles);
+        log.info("Synchronized roles: {}", roles);
     }
 
     private RoleModel createRole(Role roleEnum) {

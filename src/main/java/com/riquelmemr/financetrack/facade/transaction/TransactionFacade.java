@@ -10,4 +10,8 @@ public interface TransactionFacade {
     TransactionResponse create(CreateTransactionRequest request);
 
     TransactionPageResponse findAll(TransactionFilterRequest filterRequest, int page, int pageSize);
+
+    void deleteById(Long id);
+
+    TransactionResponse findById(Long id);
 }

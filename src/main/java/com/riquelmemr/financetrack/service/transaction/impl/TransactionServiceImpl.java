@@ -55,6 +55,20 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public void deleteById(Long id, UserModel user) {
+        TransactionModel transaction = findById(id, user);
+        transactionRepository.delete(transaction);
+    }
+
+    @Override
+    public TransactionModel findById(Long id, UserModel user) {
+        return transactionRepository.findByIdAndUser(id, user)
+                .orElseThrow(() ->
+                        new ModelNotFoundException("Transaction not found with ID [" + id + "].")
+                );
+    }
+
+    @Override
     public Page<TransactionModel> findAll(UserModel user, TransactionFilterRequest filterRequest, int page, int pageSize) {
         filterRequest.setUserId(user.getId());
 

@@ -12,6 +12,10 @@ public interface TransactionService {
 
     TransactionModel create(CreateTransactionRequest request, UserModel user);
 
+    void deleteById(Long id, UserModel user);
+
+    TransactionModel findById(Long id, UserModel user);
+
     Page<TransactionModel> findAll(UserModel user, TransactionFilterRequest filterRequest, int page, int pageSize);
 
     BigDecimal calculateBalance();

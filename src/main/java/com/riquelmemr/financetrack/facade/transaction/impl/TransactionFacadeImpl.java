@@ -36,4 +36,17 @@ public class TransactionFacadeImpl implements TransactionFacade {
         Page<TransactionModel> transactions = transactionService.findAll(user, filterRequest, page, pageSize);
         return transactionPageResponseConverter.convert(transactions);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        UserModel user = sessionService.getCurrentUser();
+        transactionService.deleteById(id, user);
+    }
+
+    @Override
+    public TransactionResponse findById(Long id) {
+        UserModel user = sessionService.getCurrentUser();
+        TransactionModel transaction = transactionService.findById(id, user);
+        return transactionResponseConverter.convert(transaction);
+    }
 }

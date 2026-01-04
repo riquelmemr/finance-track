@@ -22,4 +22,8 @@ public class BaseController {
 
         return ResponseEntity.status(status).body(data);
     }
+
+    protected ResponseEntity<Void> noContentResponse() {
+        return ResponseEntity.noContent().build();
+    }
 }

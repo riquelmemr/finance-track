@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class TransactionController extends BaseController {
 
     private static final String TRANSACTION_CREATED_SUCCESSFULLY_MESSAGE = "Transaction created with successfully.";
+    private static final String TRANSACTION_FOUND_SUCESSFULLY_MESSAGE = "Transaction found with sucessfully.";
     private static final String TRANSACTIONS_FOUND_SUCCESSFULLY_MESSAGE = "Transactions found with successfully.";
 
     private final TransactionFacade transactionFacade;
@@ -39,5 +40,19 @@ public class TransactionController extends BaseController {
     ) {
         TransactionPageResponse pageResponse = transactionFacade.findAll(filter, page, pageSize);
         return handleResponse(HttpStatus.OK, pageResponse, TRANSACTIONS_FOUND_SUCCESSFULLY_MESSAGE);
+    }
+
+    @Secured("ROLE_BASIC")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        transactionFacade.deleteById(id);
+        return noContentResponse();
+    }
+
+    @Secured("ROLE_BASIC")
+    @GetMapping("/{id}")
+    public ResponseEntity<DataWrapperResponse<TransactionResponse>> findById(@PathVariable Long id) {
+        TransactionResponse response = transactionFacade.findById(id);
+        return handleResponse(HttpStatus.OK, response, TRANSACTION_FOUND_SUCESSFULLY_MESSAGE);
     }
 }
