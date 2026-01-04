@@ -12,6 +12,7 @@ public class CategoryResponseConverter implements Converter<CategoryModel, Categ
     public CategoryResponse convert(CategoryModel source) {
         CategoryResponse target = new CategoryResponse();
 
+        target.setId(source.getId());
         target.setCode(source.getCode());
         target.setName(source.getName());
         target.setDescription(source.getDescription());

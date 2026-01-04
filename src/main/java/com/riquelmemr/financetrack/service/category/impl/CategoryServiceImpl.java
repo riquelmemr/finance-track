@@ -3,6 +3,7 @@ package com.riquelmemr.financetrack.service.category.impl;
 import com.riquelmemr.financetrack.dto.request.CategoryFilterRequest;
 import com.riquelmemr.financetrack.dto.request.CreateCategoryRequest;
 import com.riquelmemr.financetrack.exception.ModelAlreadyExistsException;
+import com.riquelmemr.financetrack.exception.ModelNotFoundException;
 import com.riquelmemr.financetrack.model.CategoryModel;
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.repository.CategoryRepository;
@@ -44,8 +45,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<CategoryModel> findByCodeAndUser(String code, UserModel user) {
-        return categoryRepository.findByCodeAndUser(code, user);
+    public CategoryModel findByCode(String code, UserModel user) {
+        return categoryRepository.findByCodeAndUser(code, user).orElseThrow(() ->
+                new ModelNotFoundException("Category with code " + code + " not found.")
+        );
     }
 
     @Override
@@ -56,5 +59,18 @@ public class CategoryServiceImpl implements CategoryService {
         PageRequest pageRequest = PageRequest.of(page, pageSize);
 
         return categoryRepository.findAll(spec, pageRequest);
+    }
+
+    @Override
+    public CategoryModel findById(Long id, UserModel user) {
+        return categoryRepository.findByIdAndUser(id, user).orElseThrow(() ->
+                new ModelNotFoundException("Category not found with ID [" + id + "]")
+        );
+    }
+
+    @Override
+    public void deleteById(Long id, UserModel user) {
+        CategoryModel category = findById(id, user);
+        categoryRepository.delete(category);
     }
 }

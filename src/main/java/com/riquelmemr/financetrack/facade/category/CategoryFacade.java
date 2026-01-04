@@ -11,4 +11,8 @@ public interface CategoryFacade {
 
     CategoryPageResponse findAll(CategoryFilterRequest filterRequest, int page, int pageSize);
 
+    CategoryResponse findById(Long id);
+
+    void deleteById(Long id);
+
 }

@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CategoryController extends BaseController {
 
-    private static final String CATEGORY_CREATED_SUCCESSFULLY_MESSAGE = "Category created successfully.";
+    private static final String CATEGORY_CREATED_SUCCESSFULLY_MESSAGE = "Category created with successfully.";
+    private static final String CATEGORY_FOUND_SUCESSFULLY_MESSAGE = "Category found with successfully.";
     private static final String CATEGORIES_FOUND_SUCCESSFULLY_MESSAGE = "Categories found with successfully.";
 
     private final CategoryFacade categoryFacade;
@@ -39,5 +40,19 @@ public class CategoryController extends BaseController {
     ) {
         CategoryPageResponse response = categoryFacade.findAll(filter, page, pageSize);
         return handleResponse(HttpStatus.OK, response, CATEGORIES_FOUND_SUCCESSFULLY_MESSAGE);
+    }
+
+    @Secured("ROLE_BASIC")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        categoryFacade.deleteById(id);
+        return handleNoContentResponse();
+    }
+
+    @Secured("ROLE_BASIC")
+    @GetMapping("/{id}")
+    public ResponseEntity<DataWrapperResponse<CategoryResponse>> findById(@PathVariable Long id) {
+        CategoryResponse response = categoryFacade.findById(id);
+        return handleResponse(HttpStatus.OK, response, CATEGORY_FOUND_SUCESSFULLY_MESSAGE);
     }
 }

@@ -37,10 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionModel create(CreateTransactionRequest request, UserModel user) {
-        CategoryModel category = categoryService.findByCodeAndUser(request.getCategoryCode(), user)
-                .orElseThrow(() ->
-                        new ModelNotFoundException("Category with code " + request.getCategoryCode() + " not found.")
-                );
+        CategoryModel category = categoryService.findByCode(request.getCategoryCode(), user);
 
         TransactionModel transaction = TransactionModel.builder()
                 .withAmount(BigDecimal.valueOf(request.getAmount()))

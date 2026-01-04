@@ -46,7 +46,7 @@ public class TransactionController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         transactionFacade.deleteById(id);
-        return noContentResponse();
+        return handleNoContentResponse();
     }
 
     @Secured("ROLE_BASIC")

@@ -26,8 +26,6 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
-    private final String ROLE_PREFIX = "ROLE_";
-
     private final AccessTokenService accessTokenService;
     private final UserService userService;
 

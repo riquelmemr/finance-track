@@ -12,6 +12,7 @@ public class CreateUserResponseConverter implements Converter<UserModel, CreateU
     public CreateUserResponse convert(UserModel source) {
         CreateUserResponse target = new CreateUserResponse();
 
+        target.setId(source.getId());
         target.setEmail(source.getEmail());
         target.setName(source.getName());
         target.setUsername(source.getUsername());

@@ -23,7 +23,7 @@ public class BaseController {
         return ResponseEntity.status(status).body(data);
     }
 
-    protected ResponseEntity<Void> noContentResponse() {
+    protected ResponseEntity<Void> handleNoContentResponse() {
         return ResponseEntity.noContent().build();
     }
 }

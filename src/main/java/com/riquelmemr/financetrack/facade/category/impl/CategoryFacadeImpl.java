@@ -26,8 +26,8 @@ public class CategoryFacadeImpl implements CategoryFacade {
     @Override
     public CategoryResponse create(CreateCategoryRequest request) {
         UserModel user = sessionService.getCurrentUser();
-        CategoryModel categoryModel = categoryService.create(request, user);
-        return categoryResponseConverter.convert(categoryModel);
+        CategoryModel category = categoryService.create(request, user);
+        return categoryResponseConverter.convert(category);
     }
 
     @Override
@@ -35,5 +35,18 @@ public class CategoryFacadeImpl implements CategoryFacade {
         UserModel user = sessionService.getCurrentUser();
         Page<CategoryModel> categories = categoryService.findAll(user, filterRequest, page, pageSize);
         return categoryPageResponseConverter.convert(categories);
+    }
+
+    @Override
+    public CategoryResponse findById(Long id) {
+        UserModel user = sessionService.getCurrentUser();
+        CategoryModel category = categoryService.findById(id, user);
+        return categoryResponseConverter.convert(category);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        UserModel user = sessionService.getCurrentUser();
+        categoryService.deleteById(id, user);
     }
 }
