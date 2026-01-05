@@ -2,6 +2,7 @@ package com.riquelmemr.financetrack.service.transaction.impl;
 
 import com.riquelmemr.financetrack.dto.request.CreateTransactionRequest;
 import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
+import com.riquelmemr.financetrack.dto.request.UpdateTransactionRequest;
 import com.riquelmemr.financetrack.enums.TransactionType;
 import com.riquelmemr.financetrack.exception.ModelNotFoundException;
 import com.riquelmemr.financetrack.model.CategoryModel;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +55,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id, UserModel user) {
         TransactionModel transaction = findById(id, user);
         transactionRepository.delete(transaction);
@@ -59,10 +63,33 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionModel findById(Long id, UserModel user) {
-        return transactionRepository.findByIdAndUser(id, user)
-                .orElseThrow(() ->
-                        new ModelNotFoundException("Transaction not found with ID [" + id + "].")
-                );
+        return transactionRepository.findByIdAndUser(id, user).orElseThrow(() ->
+                new ModelNotFoundException("Transaction not found with ID [" + id + "].")
+        );
+    }
+
+    @Override
+    public TransactionModel update(Long id, UpdateTransactionRequest request, UserModel user) {
+        TransactionModel transaction = findById(id, user);
+
+        if (nonNull(request.getAmount())) {
+            transaction.setAmount(BigDecimal.valueOf(request.getAmount()));
+        }
+
+        if (nonNull(request.getType())) {
+            transaction.setType(TransactionType.valueOf(request.getType()));
+        }
+
+        if (nonNull(request.getDescription())) {
+            transaction.setDescription(request.getDescription());
+        }
+
+        if (nonNull(request.getCategoryCode())) {
+            CategoryModel category = categoryService.findByCode(request.getCategoryCode(), user);
+            transaction.setCategory(category);
+        }
+
+        return transactionRepository.save(transaction);
     }
 
     @Override

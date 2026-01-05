@@ -2,6 +2,7 @@ package com.riquelmemr.financetrack.facade.transaction.impl;
 
 import com.riquelmemr.financetrack.dto.request.CreateTransactionRequest;
 import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
+import com.riquelmemr.financetrack.dto.request.UpdateTransactionRequest;
 import com.riquelmemr.financetrack.dto.response.TransactionPageResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionResponse;
 import com.riquelmemr.financetrack.facade.transaction.TransactionFacade;
@@ -41,6 +42,13 @@ public class TransactionFacadeImpl implements TransactionFacade {
     public void deleteById(Long id) {
         UserModel user = sessionService.getCurrentUser();
         transactionService.deleteById(id, user);
+    }
+
+    @Override
+    public TransactionResponse update(Long id, UpdateTransactionRequest request) {
+        UserModel user = sessionService.getCurrentUser();
+        TransactionModel transactionUpdated = transactionService.update(id, request, user);
+        return transactionResponseConverter.convert(transactionUpdated);
     }
 
     @Override

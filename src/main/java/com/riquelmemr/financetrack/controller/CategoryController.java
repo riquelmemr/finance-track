@@ -2,6 +2,7 @@ package com.riquelmemr.financetrack.controller;
 
 import com.riquelmemr.financetrack.dto.request.CategoryFilterRequest;
 import com.riquelmemr.financetrack.dto.request.CreateCategoryRequest;
+import com.riquelmemr.financetrack.dto.request.UpdateCategoryRequest;
 import com.riquelmemr.financetrack.dto.response.CategoryPageResponse;
 import com.riquelmemr.financetrack.dto.response.CategoryResponse;
 import com.riquelmemr.financetrack.dto.response.DataWrapperResponse;
@@ -20,6 +21,7 @@ public class CategoryController extends BaseController {
 
     private static final String CATEGORY_CREATED_SUCCESSFULLY_MESSAGE = "Category created with successfully.";
     private static final String CATEGORY_FOUND_SUCESSFULLY_MESSAGE = "Category found with successfully.";
+    private static final String CATEGORY_UPDATED_SUCESSFULLY_MESSAGE = "Category updated with successfully.";
     private static final String CATEGORIES_FOUND_SUCCESSFULLY_MESSAGE = "Categories found with successfully.";
 
     private final CategoryFacade categoryFacade;
@@ -54,5 +56,15 @@ public class CategoryController extends BaseController {
     public ResponseEntity<DataWrapperResponse<CategoryResponse>> findById(@PathVariable Long id) {
         CategoryResponse response = categoryFacade.findById(id);
         return handleResponse(HttpStatus.OK, response, CATEGORY_FOUND_SUCESSFULLY_MESSAGE);
+    }
+
+    @Secured("ROLE_BASIC")
+    @PutMapping("/{id}")
+    public ResponseEntity<DataWrapperResponse<CategoryResponse>> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateCategoryRequest request
+    ) {
+        CategoryResponse response = categoryFacade.update(id, request);
+        return handleResponse(HttpStatus.OK, response, CATEGORY_UPDATED_SUCESSFULLY_MESSAGE);
     }
 }

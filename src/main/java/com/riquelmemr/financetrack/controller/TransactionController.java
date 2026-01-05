@@ -2,6 +2,7 @@ package com.riquelmemr.financetrack.controller;
 
 import com.riquelmemr.financetrack.dto.request.CreateTransactionRequest;
 import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
+import com.riquelmemr.financetrack.dto.request.UpdateTransactionRequest;
 import com.riquelmemr.financetrack.dto.response.DataWrapperResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionPageResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionResponse;
@@ -20,6 +21,7 @@ public class TransactionController extends BaseController {
 
     private static final String TRANSACTION_CREATED_SUCCESSFULLY_MESSAGE = "Transaction created with successfully.";
     private static final String TRANSACTION_FOUND_SUCESSFULLY_MESSAGE = "Transaction found with sucessfully.";
+    private static final String TRANSACTION_UPDATED_SUCESSFULLLY_MESSAGE = "Transaction updated with sucessfully.";
     private static final String TRANSACTIONS_FOUND_SUCCESSFULLY_MESSAGE = "Transactions found with successfully.";
 
     private final TransactionFacade transactionFacade;
@@ -54,5 +56,15 @@ public class TransactionController extends BaseController {
     public ResponseEntity<DataWrapperResponse<TransactionResponse>> findById(@PathVariable Long id) {
         TransactionResponse response = transactionFacade.findById(id);
         return handleResponse(HttpStatus.OK, response, TRANSACTION_FOUND_SUCESSFULLY_MESSAGE);
+    }
+
+    @Secured("ROLE_BASIC")
+    @PutMapping("/{id}")
+    public ResponseEntity<DataWrapperResponse<TransactionResponse>> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTransactionRequest request
+    ) {
+        TransactionResponse response = transactionFacade.update(id, request);
+        return handleResponse(HttpStatus.OK, response, TRANSACTION_UPDATED_SUCESSFULLLY_MESSAGE);
     }
 }

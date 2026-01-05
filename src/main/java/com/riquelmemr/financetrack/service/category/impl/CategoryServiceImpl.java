@@ -2,6 +2,7 @@ package com.riquelmemr.financetrack.service.category.impl;
 
 import com.riquelmemr.financetrack.dto.request.CategoryFilterRequest;
 import com.riquelmemr.financetrack.dto.request.CreateCategoryRequest;
+import com.riquelmemr.financetrack.dto.request.UpdateCategoryRequest;
 import com.riquelmemr.financetrack.exception.ModelAlreadyExistsException;
 import com.riquelmemr.financetrack.exception.ModelNotFoundException;
 import com.riquelmemr.financetrack.model.CategoryModel;
@@ -17,6 +18,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +69,25 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findByIdAndUser(id, user).orElseThrow(() ->
                 new ModelNotFoundException("Category not found with ID [" + id + "]")
         );
+    }
+
+    @Override
+    public CategoryModel update(Long id, UpdateCategoryRequest request, UserModel user) {
+        CategoryModel category = findById(id, user);
+
+        if (nonNull(request.getCode())) {
+            category.setCode(request.getCode());
+        }
+
+        if (nonNull(request.getDescription())) {
+            category.setDescription(request.getDescription());
+        }
+
+        if (nonNull(request.getName())) {
+            category.setName(request.getName());
+        }
+
+        return categoryRepository.save(category);
     }
 
     @Override
