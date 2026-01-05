@@ -1,5 +1,6 @@
 package com.riquelmemr.financetrack.service.transaction.impl;
 
+import com.riquelmemr.financetrack.data.TransactionSummaryData;
 import com.riquelmemr.financetrack.dto.request.CreateTransactionRequest;
 import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
 import com.riquelmemr.financetrack.dto.request.UpdateTransactionRequest;
@@ -22,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
@@ -103,8 +105,13 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public BigDecimal calculateBalance() {
+    public BigDecimal getCurrentBalance() {
         UserModel user = sessionService.getCurrentUser();
         return transactionRepository.calculateBalance(user.getId());
+    }
+
+    @Override
+    public TransactionSummaryData getSummary(UserModel user, LocalDate from, LocalDate to) {
+        return transactionRepository.getSummary(user, from.atStartOfDay(), to.atTime(23, 59, 59));
     }
 }

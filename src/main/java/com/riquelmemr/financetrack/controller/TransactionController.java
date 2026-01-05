@@ -6,6 +6,7 @@ import com.riquelmemr.financetrack.dto.request.UpdateTransactionRequest;
 import com.riquelmemr.financetrack.dto.response.DataWrapperResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionPageResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionResponse;
+import com.riquelmemr.financetrack.dto.response.TransactionSummaryResponse;
 import com.riquelmemr.financetrack.facade.transaction.TransactionFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/transactions")
@@ -23,6 +26,7 @@ public class TransactionController extends BaseController {
     private static final String TRANSACTION_FOUND_SUCESSFULLY_MESSAGE = "Transaction found with sucessfully.";
     private static final String TRANSACTION_UPDATED_SUCESSFULLLY_MESSAGE = "Transaction updated with sucessfully.";
     private static final String TRANSACTIONS_FOUND_SUCCESSFULLY_MESSAGE = "Transactions found with successfully.";
+    private static final String SUMMARY_CALCULATED_SUCESSFULLY_MESSAGE = "Summary calculated with sucessfully.";
 
     private final TransactionFacade transactionFacade;
 
@@ -66,5 +70,15 @@ public class TransactionController extends BaseController {
     ) {
         TransactionResponse response = transactionFacade.update(id, request);
         return handleResponse(HttpStatus.OK, response, TRANSACTION_UPDATED_SUCESSFULLLY_MESSAGE);
+    }
+
+    @Secured("ROLE_BASIC")
+    @GetMapping("/summary")
+    public ResponseEntity<DataWrapperResponse<TransactionSummaryResponse>> getSummary(
+            @RequestParam(value = "from") LocalDate from,
+            @RequestParam(value = "to") LocalDate to
+    ) {
+        TransactionSummaryResponse response = transactionFacade.getSummary(from, to);
+        return handleResponse(HttpStatus.OK, response, SUMMARY_CALCULATED_SUCESSFULLY_MESSAGE);
     }
 }

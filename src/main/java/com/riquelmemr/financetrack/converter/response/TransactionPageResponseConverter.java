@@ -22,7 +22,7 @@ public class TransactionPageResponseConverter implements Converter<Page<Transact
     public TransactionPageResponse convert(Page<TransactionModel> source) {
         TransactionPageResponse target = new TransactionPageResponse();
 
-        target.setBalance(transactionService.calculateBalance());
+        target.setBalance(transactionService.getCurrentBalance());
         target.setPage(source.getPageable().getPageNumber());
         target.setPageSize(source.getPageable().getPageSize());
         target.setTransactions(getTransactions(source));

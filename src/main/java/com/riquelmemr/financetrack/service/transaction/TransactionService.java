@@ -1,5 +1,6 @@
 package com.riquelmemr.financetrack.service.transaction;
 
+import com.riquelmemr.financetrack.data.TransactionSummaryData;
 import com.riquelmemr.financetrack.dto.request.CreateTransactionRequest;
 import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
 import com.riquelmemr.financetrack.dto.request.UpdateTransactionRequest;
@@ -8,6 +9,7 @@ import com.riquelmemr.financetrack.model.UserModel;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface TransactionService {
 
@@ -21,5 +23,8 @@ public interface TransactionService {
 
     Page<TransactionModel> findAll(UserModel user, TransactionFilterRequest filterRequest, int page, int pageSize);
 
-    BigDecimal calculateBalance();
+    BigDecimal getCurrentBalance();
+
+    TransactionSummaryData getSummary(UserModel user, LocalDate from, LocalDate to);
+
 }

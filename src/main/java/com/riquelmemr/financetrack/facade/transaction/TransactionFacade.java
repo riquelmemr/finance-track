@@ -5,6 +5,9 @@ import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
 import com.riquelmemr.financetrack.dto.request.UpdateTransactionRequest;
 import com.riquelmemr.financetrack.dto.response.TransactionPageResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionResponse;
+import com.riquelmemr.financetrack.dto.response.TransactionSummaryResponse;
+
+import java.time.LocalDate;
 
 public interface TransactionFacade {
 
@@ -17,4 +20,6 @@ public interface TransactionFacade {
     TransactionResponse update(Long id, UpdateTransactionRequest request);
 
     TransactionResponse findById(Long id);
+
+    TransactionSummaryResponse getSummary(LocalDate from, LocalDate to);
 }
