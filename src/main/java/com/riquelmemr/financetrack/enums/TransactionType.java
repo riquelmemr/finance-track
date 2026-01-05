@@ -2,5 +2,5 @@ package com.riquelmemr.financetrack.enums;
 
 public enum TransactionType {
     INCOME,
-    OUTCOME
+    EXPENSE
 }
