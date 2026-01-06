@@ -41,7 +41,7 @@ public class TransactionInsightServiceImpl implements TransactionInsightService 
         return transactionRepository.findSummary(user, from.atStartOfDay(), to.atTime(23, 59, 59));
     }
 
-    public static BigDecimal calculatePercentage(BigDecimal part, BigDecimal total) {
+    private BigDecimal calculatePercentage(BigDecimal part, BigDecimal total) {
         if (isNull(part) || isNull(total) || total.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
