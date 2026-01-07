@@ -2,6 +2,8 @@ package com.riquelmemr.financetrack.service.transactioninsight;
 
 import com.riquelmemr.financetrack.data.ExpenseByCategoryData;
 import com.riquelmemr.financetrack.data.TransactionSummaryData;
+import com.riquelmemr.financetrack.data.TransactionTimelineData;
+import com.riquelmemr.financetrack.enums.TimelineGroupBy;
 import com.riquelmemr.financetrack.model.UserModel;
 
 import java.time.LocalDate;
@@ -12,4 +14,6 @@ public interface TransactionInsightService {
     List<ExpenseByCategoryData> findExpensesByCategory(UserModel user, LocalDate from, LocalDate to);
 
     TransactionSummaryData findSummary(UserModel user, LocalDate from, LocalDate to);
+
+    List<TransactionTimelineData> findTimeline(UserModel user, TimelineGroupBy groupBy, LocalDate from, LocalDate to);
 }

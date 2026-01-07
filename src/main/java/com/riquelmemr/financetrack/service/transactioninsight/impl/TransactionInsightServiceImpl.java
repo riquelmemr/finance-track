@@ -1,11 +1,12 @@
 package com.riquelmemr.financetrack.service.transactioninsight.impl;
 
-import com.riquelmemr.financetrack.data.ExpenseByCategoryData;
-import com.riquelmemr.financetrack.data.TransactionSummaryData;
+import com.riquelmemr.financetrack.data.*;
+import com.riquelmemr.financetrack.enums.TimelineGroupBy;
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.repository.TransactionRepository;
 import com.riquelmemr.financetrack.service.transactioninsight.TransactionInsightService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +21,8 @@ import static java.util.Objects.isNull;
 public class TransactionInsightServiceImpl implements TransactionInsightService {
 
     private final TransactionRepository transactionRepository;
+    private final Converter<TransactionTimelineByMonthData, TransactionTimelineData> transactionTimelineMonthConverter;
+    private final Converter<TransactionTimelineByYearData, TransactionTimelineData> transactionTimelineYearConverter;
 
     @Override
     public List<ExpenseByCategoryData> findExpensesByCategory(UserModel user, LocalDate from, LocalDate to) {
@@ -39,6 +42,30 @@ public class TransactionInsightServiceImpl implements TransactionInsightService 
     @Override
     public TransactionSummaryData findSummary(UserModel user, LocalDate from, LocalDate to) {
         return transactionRepository.findSummary(user, from.atStartOfDay(), to.atTime(23, 59, 59));
+    }
+
+    @Override
+    public List<TransactionTimelineData> findTimeline(UserModel user, TimelineGroupBy groupBy, LocalDate from, LocalDate to) {
+        return switch (groupBy) {
+            case YEAR -> findTimelineByYear(user, from, to);
+            case MONTH -> findTimelineByMonth(user, from, to);
+        };
+    }
+
+    private List<TransactionTimelineData> findTimelineByMonth(UserModel user, LocalDate from, LocalDate to) {
+        return transactionRepository
+                .findTimelineByMonth(user, from.atStartOfDay(), to.atTime(23, 59, 59))
+                .stream()
+                .map(transactionTimelineMonthConverter::convert)
+                .toList();
+    }
+
+    private List<TransactionTimelineData> findTimelineByYear(UserModel user, LocalDate from, LocalDate to) {
+        return transactionRepository
+                .findTimelineByYear(user, from.atStartOfDay(), to.atTime(23, 59, 59))
+                .stream()
+                .map(transactionTimelineYearConverter::convert)
+                .toList();
     }
 
     private BigDecimal calculatePercentage(BigDecimal part, BigDecimal total) {

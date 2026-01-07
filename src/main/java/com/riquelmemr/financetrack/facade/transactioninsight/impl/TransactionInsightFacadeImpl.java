@@ -2,8 +2,11 @@ package com.riquelmemr.financetrack.facade.transactioninsight.impl;
 
 import com.riquelmemr.financetrack.data.ExpenseByCategoryData;
 import com.riquelmemr.financetrack.data.TransactionSummaryData;
+import com.riquelmemr.financetrack.data.TransactionTimelineData;
 import com.riquelmemr.financetrack.dto.response.ExpenseByCategoryResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionSummaryResponse;
+import com.riquelmemr.financetrack.dto.response.TransactionTimelineResponse;
+import com.riquelmemr.financetrack.enums.TimelineGroupBy;
 import com.riquelmemr.financetrack.facade.transactioninsight.TransactionInsightFacade;
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.service.session.SessionService;
@@ -23,6 +26,7 @@ public class TransactionInsightFacadeImpl implements TransactionInsightFacade {
     private final TransactionInsightService transactionInsightService;
     private final Converter<TransactionSummaryData, TransactionSummaryResponse> transactionSummaryResponseDataConverter;
     private final Converter<ExpenseByCategoryData, ExpenseByCategoryResponse> expenseByCategoryResponseDataConverter;
+    private final Converter<TransactionTimelineData, TransactionTimelineResponse> transactionTimelineResponseDataConverter;
 
     @Override
     public TransactionSummaryResponse findSummary(LocalDate from, LocalDate to) {
@@ -36,5 +40,12 @@ public class TransactionInsightFacadeImpl implements TransactionInsightFacade {
         UserModel user = sessionService.getCurrentUser();
         List<ExpenseByCategoryData> dataList = transactionInsightService.findExpensesByCategory(user, from, to);
         return dataList.stream().map(expenseByCategoryResponseDataConverter::convert).toList();
+    }
+
+    @Override
+    public List<TransactionTimelineResponse> findTimeline(TimelineGroupBy groupBy, LocalDate from, LocalDate to) {
+        UserModel user = sessionService.getCurrentUser();
+        List<TransactionTimelineData> dataList = transactionInsightService.findTimeline(user, groupBy, from, to);
+        return dataList.stream().map(transactionTimelineResponseDataConverter::convert).toList();
     }
 }

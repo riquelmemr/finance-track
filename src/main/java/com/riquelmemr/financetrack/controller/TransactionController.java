@@ -4,6 +4,7 @@ import com.riquelmemr.financetrack.dto.request.CreateTransactionRequest;
 import com.riquelmemr.financetrack.dto.request.TransactionFilterRequest;
 import com.riquelmemr.financetrack.dto.request.UpdateTransactionRequest;
 import com.riquelmemr.financetrack.dto.response.*;
+import com.riquelmemr.financetrack.enums.TimelineGroupBy;
 import com.riquelmemr.financetrack.facade.transaction.TransactionFacade;
 import com.riquelmemr.financetrack.facade.transactioninsight.TransactionInsightFacade;
 import jakarta.validation.Valid;
@@ -27,6 +28,7 @@ public class TransactionController extends BaseController {
     private static final String TRANSACTIONS_FOUND_SUCCESSFULLY_MESSAGE = "Transactions found with successfully.";
     private static final String SUMMARY_CALCULATED_SUCESSFULLY_MESSAGE = "Summary calculated with sucessfully.";
     private static final String EXPENSE_BY_CATEGORY_CALCULATED_SUCCESSFULLY_MESSAGE = "Expense by category calculated with successfully.";
+    private static final String TIMELINE_CALCULATED_SUCCESSFULLY_MESSAGE = "Timeline calculated with successfully.";
 
     private final TransactionFacade transactionFacade;
     private final TransactionInsightFacade transactionInsightFacade;
@@ -91,5 +93,16 @@ public class TransactionController extends BaseController {
     ) {
         List<ExpenseByCategoryResponse> response = transactionInsightFacade.findExpenseByCategory(from, to);
         return handleResponse(HttpStatus.OK, response, EXPENSE_BY_CATEGORY_CALCULATED_SUCCESSFULLY_MESSAGE);
+    }
+
+    @Secured("ROLE_BASIC")
+    @GetMapping("/insights/timeline")
+    public ResponseEntity<DataWrapperResponse<List<TransactionTimelineResponse>>> findTimeline(
+            @RequestParam(value = "groupBy") TimelineGroupBy groupBy,
+            @RequestParam(value = "from") LocalDate from,
+            @RequestParam(value = "to") LocalDate to
+    ) {
+        List<TransactionTimelineResponse> response = transactionInsightFacade.findTimeline(groupBy, from, to);
+        return handleResponse(HttpStatus.OK, response, TIMELINE_CALCULATED_SUCCESSFULLY_MESSAGE);
     }
 }

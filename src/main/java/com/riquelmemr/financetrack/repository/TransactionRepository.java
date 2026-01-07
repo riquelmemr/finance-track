@@ -1,7 +1,6 @@
 package com.riquelmemr.financetrack.repository;
 
-import com.riquelmemr.financetrack.data.ExpenseByCategoryData;
-import com.riquelmemr.financetrack.data.TransactionSummaryData;
+import com.riquelmemr.financetrack.data.*;
 import com.riquelmemr.financetrack.model.TransactionModel;
 import com.riquelmemr.financetrack.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,18 +47,55 @@ public interface TransactionRepository
 
     @Query("""
     SELECT new com.riquelmemr.financetrack.data.ExpenseByCategoryData(
-            c.name,
-            SUM(t.amount)
-        )
-        FROM TransactionModel t
+        c.name,
+        SUM(t.amount)
+    )
+    FROM TransactionModel t
         JOIN t.category c
-        WHERE t.user = :user
-          AND t.type = com.riquelmemr.financetrack.enums.TransactionType.EXPENSE
-          AND t.date BETWEEN :from AND :to
-        GROUP BY c.name
-        ORDER BY SUM(t.amount) DESC
+    WHERE t.user = :user
+        AND t.type = com.riquelmemr.financetrack.enums.TransactionType.EXPENSE
+        AND t.date BETWEEN :from AND :to
+    GROUP BY c.name
+    ORDER BY SUM(t.amount) DESC
     """)
     List<ExpenseByCategoryData> findExpensesByCategory(
+            UserModel user,
+            LocalDateTime from,
+            LocalDateTime to
+    );
+
+    @Query("""
+    SELECT new com.riquelmemr.financetrack.data.TransactionTimelineByMonthData(
+        YEAR(t.date),
+        MONTH(t.date),
+        SUM(CASE WHEN t.type = com.riquelmemr.financetrack.enums.TransactionType.INCOME THEN t.amount ELSE 0 END),
+        SUM(CASE WHEN t.type = com.riquelmemr.financetrack.enums.TransactionType.EXPENSE THEN t.amount ELSE 0 END)
+    )
+    FROM TransactionModel t
+    WHERE t.user = :user
+        AND t.date BETWEEN :from AND :to
+    GROUP BY YEAR(t.date), MONTH(t.date)
+    ORDER BY YEAR(t.date), MONTH(t.date)
+    """)
+    List<TransactionTimelineByMonthData> findTimelineByMonth(
+            UserModel user,
+            LocalDateTime from,
+            LocalDateTime to
+    );
+
+    @Query("""
+    SELECT new com.riquelmemr.financetrack.data.TransactionTimelineByYearData(
+        YEAR(t.date),
+        SUM(CASE WHEN t.type = com.riquelmemr.financetrack.enums.TransactionType.INCOME THEN t.amount ELSE 0 END),
+        SUM(CASE WHEN t.type = com.riquelmemr.financetrack.enums.TransactionType.EXPENSE THEN t.amount ELSE 0 END)
+    )
+    FROM TransactionModel t
+    WHERE t.user = :user
+      AND t.date BETWEEN :from AND :to
+    GROUP BY YEAR(t.date)
+    ORDER BY YEAR(t.date)
+    """)
+    List<TransactionTimelineByYearData> findTimelineByYear(
             UserModel user,
             LocalDateTime from,
             LocalDateTime to
