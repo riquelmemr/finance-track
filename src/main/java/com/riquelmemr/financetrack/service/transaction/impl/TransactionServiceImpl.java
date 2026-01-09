@@ -69,6 +69,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional
     public TransactionModel update(Long id, UpdateTransactionRequest request, UserModel user) {
         TransactionModel transaction = findById(id, user);
 

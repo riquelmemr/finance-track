@@ -1,12 +1,17 @@
 package com.riquelmemr.financetrack.facade.auth.impl;
 
-import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
 import com.riquelmemr.financetrack.dto.request.AuthRequest;
+import com.riquelmemr.financetrack.dto.request.RegisterUserRequest;
 import com.riquelmemr.financetrack.dto.response.AuthResponse;
+import com.riquelmemr.financetrack.dto.response.UserResponse;
 import com.riquelmemr.financetrack.facade.auth.AuthFacade;
 import com.riquelmemr.financetrack.model.AccessTokenModel;
+import com.riquelmemr.financetrack.model.UserModel;
+import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
 import com.riquelmemr.financetrack.service.accesstoken.AccessTokenService;
+import com.riquelmemr.financetrack.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,8 +24,10 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class AuthFacadeImpl implements AuthFacade {
 
+    private final AuthService authService;
     private final AccessTokenService accessTokenService;
     private final AuthenticationManager authenticationManager;
+    private final Converter<UserModel, UserResponse> userResponseConverter;
 
     @Override
     public AuthResponse authenticate(AuthRequest authRequest) {
@@ -36,5 +43,11 @@ public class AuthFacadeImpl implements AuthFacade {
                 .withAccessToken(accessTokenModel.getToken())
                 .withExpiresIn(Duration.between(Instant.now(), accessTokenModel.getExpiresAt()).getSeconds())
                 .build();
+    }
+
+    @Override
+    public UserResponse register(RegisterUserRequest request) {
+        UserModel user = authService.register(request, null);
+        return userResponseConverter.convert(user);
     }
 }

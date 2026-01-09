@@ -1,8 +1,7 @@
 package com.riquelmemr.financetrack.facade.user;
 
-import com.riquelmemr.financetrack.dto.request.CreateUserRequest;
-import com.riquelmemr.financetrack.dto.response.CreateUserResponse;
+import com.riquelmemr.financetrack.dto.response.UserResponse;
 
 public interface UserFacade {
-    CreateUserResponse create(CreateUserRequest createUserRequest);
+    UserResponse getMe();
 }
