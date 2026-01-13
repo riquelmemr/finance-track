@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.riquelmemr</groupId>
-	<artifactId>financetrack</artifactId>
+	<artifactId>finance-track-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>financetrack</name>
+	<name>finance-track-api</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
