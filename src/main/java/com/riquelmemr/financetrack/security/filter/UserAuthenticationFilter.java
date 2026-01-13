@@ -34,7 +34,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         String token = recoveryToken(request);
 
         if (nonNull(token)) {
-            DecodedJWT decoded = accessTokenService.validateAndDecodedToken(token);
+            DecodedJWT decoded = accessTokenService.validateToken(token);
             String username = decoded.getSubject();
 
             UserModel userModel = userService.findByUsername(username);

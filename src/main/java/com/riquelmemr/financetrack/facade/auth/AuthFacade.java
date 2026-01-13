@@ -10,4 +10,6 @@ public interface AuthFacade {
     AuthResponse authenticate(AuthRequest authRequest);
 
     UserResponse register(RegisterUserRequest request);
+
+    void logout();
 }
