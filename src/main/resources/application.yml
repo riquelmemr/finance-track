@@ -22,6 +22,9 @@ server:
   port: 8080
   shutdown: graceful
 
+  servlet:
+    context-path: /api/v1
+
 jwt:
   secret: Kc_eXseIh7h5Lc$>KTHPP/U)/qZ-~<f?9SE*u~lW
   issuer: financetrack

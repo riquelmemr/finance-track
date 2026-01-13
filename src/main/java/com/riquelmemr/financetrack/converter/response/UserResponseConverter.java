@@ -1,9 +1,12 @@
 package com.riquelmemr.financetrack.converter.response;
 
 import com.riquelmemr.financetrack.dto.response.UserResponse;
+import com.riquelmemr.financetrack.model.RoleModel;
 import com.riquelmemr.financetrack.model.UserModel;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class UserResponseConverter implements Converter<UserModel, UserResponse> {
@@ -16,7 +19,12 @@ public class UserResponseConverter implements Converter<UserModel, UserResponse>
         target.setEmail(source.getEmail());
         target.setName(source.getName());
         target.setUsername(source.getUsername());
+        target.setRoles(getRoles(source.getRoles()));
 
         return target;
+    }
+
+    private List<String> getRoles(List<RoleModel> roles) {
+        return roles.stream().map(RoleModel::getName).toList();
     }
 }

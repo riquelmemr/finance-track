@@ -10,6 +10,7 @@ import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
 import com.riquelmemr.financetrack.service.accesstoken.AccessTokenService;
 import com.riquelmemr.financetrack.service.auth.AuthService;
+import com.riquelmemr.financetrack.service.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,7 @@ public class AuthFacadeImpl implements AuthFacade {
     private final AccessTokenService accessTokenService;
     private final AuthenticationManager authenticationManager;
     private final Converter<UserModel, UserResponse> userResponseConverter;
+    private final SessionService sessionService;
 
     @Override
     public AuthResponse authenticate(AuthRequest authRequest) {
@@ -49,5 +51,11 @@ public class AuthFacadeImpl implements AuthFacade {
     public UserResponse register(RegisterUserRequest request) {
         UserModel user = authService.register(request, null);
         return userResponseConverter.convert(user);
+    }
+
+    @Override
+    public void logout() {
+        UserModel user = sessionService.getCurrentUser();
+        authService.logout(user);
     }
 }

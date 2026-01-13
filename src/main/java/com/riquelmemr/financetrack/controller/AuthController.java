@@ -36,4 +36,10 @@ public class AuthController extends BaseController {
         UserResponse response = authFacade.register(createUserRequest);
         return handleResponse(HttpStatus.CREATED, response, USER_CREATED_SUCCESSFULLY_MESSAGE);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        authFacade.logout();
+        return handleNoContentResponse();
+    }
 }

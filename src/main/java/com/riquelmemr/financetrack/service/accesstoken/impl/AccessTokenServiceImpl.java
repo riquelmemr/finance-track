@@ -3,6 +3,7 @@ package com.riquelmemr.financetrack.service.accesstoken.impl;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.riquelmemr.financetrack.exception.AuthenticationException;
+import com.riquelmemr.financetrack.exception.ModelNotFoundException;
 import com.riquelmemr.financetrack.model.AccessTokenModel;
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.repository.AccessTokenRepository;
@@ -56,7 +57,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     }
 
     @Override
-    public DecodedJWT validateAndDecodedToken(String token) {
+    public DecodedJWT validateToken(String token) {
         Optional<AccessTokenModel> accessTokenModelOpt = findByToken(token);
 
         if (accessTokenModelOpt.isPresent()) {
@@ -67,12 +68,23 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         throw new AuthenticationException("Token not found.");
     }
 
+    @Override
+    public void deleteToken(UserModel user) {
+        Optional<AccessTokenModel> accessTokenOpt = accessTokenRepository.findByUser(user);
+
+        if (accessTokenOpt.isEmpty()) {
+            throw new ModelNotFoundException("Token not found.");
+        }
+
+        accessTokenRepository.delete(accessTokenOpt.get());
+    }
+
     private Optional<AccessTokenModel> findByToken(String token) {
         return accessTokenRepository.findByToken(token);
     }
 
     private AccessTokenModel createToken(String authenticationId, UserModel userModel) {
-        DecodedJWT decodedAccessToken = generateAndGetToken(userModel.getUsername());
+        DecodedJWT decodedAccessToken = generateAndDecodeToken(userModel.getUsername());
 
         AccessTokenModel accessTokenModel = new AccessTokenModel();
 
@@ -85,7 +97,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         return accessTokenRepository.save(accessTokenModel);
     }
 
-    private DecodedJWT generateAndGetToken(String username) {
+    private DecodedJWT generateAndDecodeToken(String username) {
         String token = jwtService.generateToken(username);
         return jwtService.validateToken(token);
     }

@@ -8,6 +8,7 @@ import com.riquelmemr.financetrack.model.RoleModel;
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.repository.UserRepository;
 import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
+import com.riquelmemr.financetrack.service.accesstoken.AccessTokenService;
 import com.riquelmemr.financetrack.service.auth.AuthService;
 import com.riquelmemr.financetrack.service.role.RoleService;
 import jakarta.transaction.Transactional;
@@ -31,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final RoleService roleService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AccessTokenService accessTokenService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -63,6 +65,11 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public void logout(UserModel user) {
+        accessTokenService.deleteToken(user);
     }
 
     private boolean isAdminRole(RoleModel role) {
