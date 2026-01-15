@@ -1,8 +1,8 @@
 package com.riquelmemr.financetrack.config;
 
+import com.riquelmemr.financetrack.security.entrypoint.CustomAuthenticationEntryPoint;
 import com.riquelmemr.financetrack.security.filter.UserAuthenticationFilter;
 import com.riquelmemr.financetrack.security.handler.CustomAccessDeniedHandler;
-import com.riquelmemr.financetrack.security.entrypoint.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +36,11 @@ public class SecurityConfig {
                 .sessionManagement(securitySessionManagementConfigurer -> securitySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
                         .anyRequest().authenticated())
