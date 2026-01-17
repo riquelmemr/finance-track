@@ -103,9 +103,6 @@ Em desenvolvimento local, é recomendado utilizar **Docker Compose** para subir 
 ### Subir aplicação + banco
 
 ```
-POSTGRES_DB=seu_banco \
-POSTGRES_USER=seu_user \
-POSTGRES_PASSWORD=sua_password \
 docker-compose up -d
 ```
 
@@ -124,14 +121,6 @@ http://localhost:8080
 3. Execute:
 
 ```
-SPRING_PROFILES_ACTIVE=dev \
-POSTGRES_HOST=localhost \
-POSTGRES_PORT=5432 \
-POSTGRES_DB=seu_banco \
-POSTGRES_USER=seu_user \ 
-POSTGRES_PASSWORD=sua_password \
-DATASOURCE_ADMIN_USERNAME=admin \
-DATASOURCE_ADMIN_PASSWORD=nimda \
 ./mvnw spring-boot:run
 ```
 
@@ -142,14 +131,6 @@ DATASOURCE_ADMIN_PASSWORD=nimda \
 Para rodar os testes:
 
 ```
-SPRING_PROFILES_ACTIVE=dev \
-POSTGRES_HOST=localhost \
-POSTGRES_PORT=5432 \
-POSTGRES_DB=seu_banco \
-POSTGRES_USER=seu_user \ 
-POSTGRES_PASSWORD=sua_password \
-DATASOURCE_ADMIN_USERNAME=admin \
-DATASOURCE_ADMIN_PASSWORD=nimda \
 ./mvnw test
 ```
 
