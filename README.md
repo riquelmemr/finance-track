@@ -106,12 +106,6 @@ Em desenvolvimento local, é recomendado utilizar **Docker Compose** para subir 
 docker-compose up -d
 ```
 
-A aplicação ficará disponível em:
-
-```
-http://localhost:8080
-```
-
 ---
 
 ## ▶️ Rodando localmente
@@ -123,6 +117,12 @@ http://localhost:8080
 ```
 ./mvnw spring-boot:run
 ```
+A aplicação ficará disponível em:
+
+```
+http://localhost:8080/api/v1
+```
+
 
 ---
 
