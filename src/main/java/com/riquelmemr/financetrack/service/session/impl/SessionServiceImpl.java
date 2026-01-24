@@ -1,6 +1,7 @@
 package com.riquelmemr.financetrack.service.session.impl;
 
 import com.riquelmemr.financetrack.model.UserModel;
+import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
 import com.riquelmemr.financetrack.service.session.SessionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +12,8 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public UserModel getCurrentUser() {
-        return (UserModel) getCurrentAuthentication().getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) getCurrentAuthentication().getPrincipal();
+        return userDetails.getUser();
     }
 
     @Override

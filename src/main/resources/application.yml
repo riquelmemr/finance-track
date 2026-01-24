@@ -25,7 +25,13 @@ server:
   servlet:
     context-path: /api/v1
 
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
 jwt:
-  secret: Kc_eXseIh7h5Lc$>KTHPP/U)/qZ-~<f?9SE*u~lW
+  secret: ${JWT_SECRET}
   issuer: financetrack
   expiration: 7776000

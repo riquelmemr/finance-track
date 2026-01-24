@@ -46,7 +46,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
             UserDetailsImpl userDetails = new UserDetailsImpl(userModel);
 
             Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(userModel, null, userDetails.getAuthorities());
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
@@ -57,8 +57,9 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (nonNull(authorizationHeader)) {
-            return authorizationHeader.replace("Bearer ", "");
+        if (nonNull(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            return token.isBlank() ? null : token;
         }
 
         return null;
