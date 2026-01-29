@@ -7,7 +7,11 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
-@Table(name = "tb_access_token")
+@Table(name = "tb_access_token", indexes = {
+        @Index(name = "idx_access_token_authentication_id", columnList = "authentication_id"),
+        @Index(name = "idx_access_token_token", columnList = "token"),
+        @Index(name = "idx_access_token_user", columnList = "user_id")
+})
 @Getter
 @Setter
 public class AccessTokenModel extends ItemModel {

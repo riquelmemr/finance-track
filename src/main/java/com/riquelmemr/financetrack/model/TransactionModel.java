@@ -10,7 +10,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "tb_transaction")
+@Table(name = "tb_transaction", indexes = {
+        @Index(name = "idx_transaction_id", columnList = "id"),
+        @Index(name = "idx_transaction_user", columnList = "user_id"),
+        @Index(name = "idx_transaction_id_user", columnList = "id, user_id")
+})
 @Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
