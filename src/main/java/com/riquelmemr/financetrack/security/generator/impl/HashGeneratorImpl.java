@@ -10,8 +10,6 @@ import java.util.Base64;
 @Component
 public class HashGeneratorImpl implements HashGenerator {
 
-    private static final String PIPE = "|";
-
     @Override
     public String generate(String value) {
         return hash(value);
