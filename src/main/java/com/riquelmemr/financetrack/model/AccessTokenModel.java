@@ -26,9 +26,6 @@ public class AccessTokenModel extends ItemModel {
     @Column(unique = true, nullable = false)
     private String token;
 
-    @Column(unique = true)
-    private String refreshToken;
-
     @Column(nullable = false)
     private Instant expiresAt;
 
