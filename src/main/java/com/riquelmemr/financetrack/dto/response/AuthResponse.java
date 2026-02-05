@@ -1,12 +1,12 @@
 package com.riquelmemr.financetrack.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder(setterPrefix = "with")
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthResponse {
     private String accessToken;
     private Long expiresIn;

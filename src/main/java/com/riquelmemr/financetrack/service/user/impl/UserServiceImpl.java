@@ -2,8 +2,11 @@ package com.riquelmemr.financetrack.service.user.impl;
 
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.repository.UserRepository;
+import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
 import com.riquelmemr.financetrack.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +14,12 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserModel userModel = userRepository.findByUsername(username);
+        return new UserDetailsImpl(userModel);
+    }
 
     @Override
     public UserModel findByUsername(String username) {

@@ -23,7 +23,7 @@ public class JwtServiceImpl implements JwtService {
             return JWT.create()
                     .withIssuer(jwtConfig.getIssuer())
                     .withSubject(username)
-                    .withExpiresAt(getExpirationDate())
+                    .withExpiresAt(getExpiration())
                     .sign(jwtConfig.algorithm());
         } catch (JWTCreationException exception) {
             throw new JWTCreationException("An error occurred when generate token: ", exception);
@@ -31,16 +31,13 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String getSubjectFromToken(String token) {
-        try {
-            return JWT.require(jwtConfig.algorithm())
-                    .withIssuer(jwtConfig.getIssuer())
-                    .build()
-                    .verify(token)
-                    .getSubject();
-        } catch (JWTVerificationException exception){
-            throw new JWTVerificationException("Token invalid or expired.");
-        }
+    public DecodedJWT decodeToken(String token) {
+        return JWT.decode(token);
+    }
+
+    @Override
+    public Instant getRefreshTokenExpiration() {
+        return Instant.now().plusSeconds(jwtConfig.getRefreshExpiration());
     }
 
     @Override
@@ -55,7 +52,7 @@ public class JwtServiceImpl implements JwtService {
         }
     }
 
-    private Instant getExpirationDate() {
-        return Instant.now().plusSeconds(jwtConfig.getExpiration());
+    private Instant getExpiration() {
+        return Instant.now().plusSeconds(jwtConfig.getAccessExpiration());
     }
 }

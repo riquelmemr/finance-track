@@ -1,23 +1,28 @@
 package com.riquelmemr.financetrack.service.accesstoken.impl;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.riquelmemr.financetrack.data.AuthenticationData;
+import com.riquelmemr.financetrack.data.RefreshTokenData;
+import com.riquelmemr.financetrack.data.TokenData;
 import com.riquelmemr.financetrack.exception.AuthenticationException;
 import com.riquelmemr.financetrack.exception.ModelNotFoundException;
 import com.riquelmemr.financetrack.model.AccessTokenModel;
+import com.riquelmemr.financetrack.model.RefreshTokenModel;
 import com.riquelmemr.financetrack.model.UserModel;
 import com.riquelmemr.financetrack.repository.AccessTokenRepository;
 import com.riquelmemr.financetrack.security.generator.HashGenerator;
 import com.riquelmemr.financetrack.service.accesstoken.AccessTokenService;
 import com.riquelmemr.financetrack.service.jwt.JwtService;
+import com.riquelmemr.financetrack.service.refreshtoken.RefreshTokenService;
 import com.riquelmemr.financetrack.service.user.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
@@ -28,47 +33,46 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     private final HashGenerator hashGenerator;
     private final UserService userService;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
-    public AccessTokenModel generateToken(String username) {
-        String authenticationId = hashGenerator.generate(username);
-
-        Optional<AccessTokenModel> accessTokenModelOpt = accessTokenRepository.findByAuthenticationId(authenticationId);
-
-        if (accessTokenModelOpt.isPresent()) {
-            AccessTokenModel accessTokenModel = accessTokenModelOpt.get();
-
-            try {
-                jwtService.validateToken(accessTokenModel.getToken());
-                return accessTokenModel;
-            } catch (JWTVerificationException ex) {
-                accessTokenRepository.delete(accessTokenModel);
-                return createToken(authenticationId, accessTokenModel.getUser());
-            }
-        }
-
+    @Transactional
+    public AuthenticationData generateToken(String username) {
         UserModel userModel = userService.findByUsername(username);
 
-        if (nonNull(userModel)) {
-            return createToken(authenticationId, userModel);
+        if (isNull(userModel)) {
+            throw new AuthenticationException("An occurred error when create new token.");
         }
 
-        throw new AuthenticationException("An occurred error when create new token.");
+        return generateAuthenticationTokens(userModel);
     }
 
     @Override
     public DecodedJWT validateToken(String token) {
-        Optional<AccessTokenModel> accessTokenModelOpt = findByToken(token);
+        AccessTokenModel accessTokenModel = findByToken(token);
 
-        if (accessTokenModelOpt.isPresent()) {
-            AccessTokenModel accessTokenModel = accessTokenModelOpt.get();
-            return jwtService.validateToken(accessTokenModel.getToken());
+        if (accessTokenModel.getRevoked()) {
+            throw new AuthenticationException("Token revoked.");
         }
 
-        throw new AuthenticationException("Token not found.");
+        return jwtService.validateToken(token);
     }
 
     @Override
+    @Transactional
+    public void revokeToken(AccessTokenModel accessTokenModel) {
+        accessTokenModel.setRevoked(true);
+        accessTokenRepository.save(accessTokenModel);
+    }
+
+    @Override
+    @Transactional
+    public void revokeAllByRefreshToken(RefreshTokenModel refreshTokenModel) {
+        accessTokenRepository.revokeAllByRefreshToken(refreshTokenModel);
+    }
+
+    @Override
+    @Transactional
     public void deleteToken(UserModel user) {
         Optional<AccessTokenModel> accessTokenOpt = accessTokenRepository.findByUser(user);
 
@@ -79,26 +83,42 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         accessTokenRepository.delete(accessTokenOpt.get());
     }
 
-    private Optional<AccessTokenModel> findByToken(String token) {
-        return accessTokenRepository.findByToken(token);
+    @Override
+    public AccessTokenModel findByToken(String rawToken) {
+        String hashToken = hashGenerator.generate(rawToken);
+
+        return accessTokenRepository.findByToken(hashToken)
+                .orElseThrow(() -> new ModelNotFoundException("Token not found."));
     }
 
-    private AccessTokenModel createToken(String authenticationId, UserModel userModel) {
-        DecodedJWT decodedAccessToken = generateAndDecodeToken(userModel.getUsername());
+    private AuthenticationData generateAuthenticationTokens(UserModel user) {
+        String accessToken = jwtService.generateToken(user.getUsername());
+        DecodedJWT decodedToken = jwtService.decodeToken(accessToken);
+
+        RefreshTokenData generatedRefreshToken = refreshTokenService.generateToken(user);
 
         AccessTokenModel accessTokenModel = new AccessTokenModel();
+        accessTokenModel.setUser(user);
+        accessTokenModel.setToken(hashGenerator.generate(accessToken));
+        accessTokenModel.setRevoked(false);
+        accessTokenModel.setExpiresAt(decodedToken.getExpiresAtAsInstant());
+        accessTokenModel.setRefreshToken(generatedRefreshToken.getRefreshToken());
 
-        accessTokenModel.setAuthenticationId(authenticationId);
-        accessTokenModel.setUser(userModel);
-        accessTokenModel.setToken(decodedAccessToken.getToken());
-        accessTokenModel.setExpiresAt(decodedAccessToken.getExpiresAtAsInstant());
-        accessTokenModel.setActive(true);
+        accessTokenRepository.save(accessTokenModel);
 
-        return accessTokenRepository.save(accessTokenModel);
-    }
+        TokenData accessTokenData = TokenData.builder()
+                .withTokenValue(accessToken)
+                .withExpiresAt(accessTokenModel.getExpiresAt())
+                .build();
 
-    private DecodedJWT generateAndDecodeToken(String username) {
-        String token = jwtService.generateToken(username);
-        return jwtService.validateToken(token);
+        TokenData refreshTokenData = TokenData.builder()
+                .withTokenValue(generatedRefreshToken.getToken())
+                .withExpiresAt(generatedRefreshToken.getRefreshToken().getExpiresAt())
+                .build();
+
+        return AuthenticationData.builder()
+                .withAccessToken(accessTokenData)
+                .withRefreshToken(refreshTokenData)
+                .build();
     }
 }
