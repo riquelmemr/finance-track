@@ -1,5 +1,6 @@
 package com.riquelmemr.financetrack.facade.auth.impl;
 
+import com.riquelmemr.financetrack.converter.AuthenticationTokenResultConverter;
 import com.riquelmemr.financetrack.converter.data.AuthenticationTokenResultConverterImpl;
 import com.riquelmemr.financetrack.data.AuthenticationResult;
 import com.riquelmemr.financetrack.data.AuthenticationData;
@@ -26,7 +27,7 @@ public class AuthFacadeImpl implements AuthFacade {
     private final AuthService authService;
     private final CookieService cookieService;
     private final Converter<UserModel, UserResponse> userResponseConverter;
-    private final AuthenticationTokenResultConverterImpl authenticationTokenResultConverter;
+    private final AuthenticationTokenResultConverter authenticationTokenResultConverter;
     private final SessionService sessionService;
 
     @Override
