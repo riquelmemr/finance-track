@@ -1,9 +1,8 @@
 package com.riquelmemr.financetrack.facade.auth.impl;
 
 import com.riquelmemr.financetrack.converter.AuthenticationTokenResultConverter;
-import com.riquelmemr.financetrack.converter.data.AuthenticationTokenResultConverterImpl;
-import com.riquelmemr.financetrack.data.AuthenticationResult;
 import com.riquelmemr.financetrack.data.AuthenticationData;
+import com.riquelmemr.financetrack.data.AuthenticationResult;
 import com.riquelmemr.financetrack.data.RefreshTokenData;
 import com.riquelmemr.financetrack.dto.request.AuthRequest;
 import com.riquelmemr.financetrack.dto.request.RegisterUserRequest;
