@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.riquelmemr.financetrack.config.JwtConfig;
+import com.riquelmemr.financetrack.data.GeneratedAccessToken;
 import com.riquelmemr.financetrack.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,21 +19,20 @@ public class JwtServiceImpl implements JwtService {
     private final JwtConfig jwtConfig;
 
     @Override
-    public String generateToken(String username) {
+    public GeneratedAccessToken generateToken(String username) {
         try {
-            return JWT.create()
+            String token = JWT.create()
                     .withIssuer(jwtConfig.getIssuer())
                     .withSubject(username)
                     .withExpiresAt(getExpiration())
                     .sign(jwtConfig.algorithm());
+
+            DecodedJWT decoded = JWT.decode(token);
+
+            return new GeneratedAccessToken(token, decoded.getExpiresAtAsInstant());
         } catch (JWTCreationException exception) {
             throw new JWTCreationException("An error occurred when generate token: ", exception);
         }
-    }
-
-    @Override
-    public DecodedJWT decodeToken(String token) {
-        return JWT.decode(token);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.riquelmemr.financetrack.service.accesstoken.impl;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.riquelmemr.financetrack.data.AuthenticationData;
+import com.riquelmemr.financetrack.data.GeneratedAccessToken;
 import com.riquelmemr.financetrack.data.RefreshTokenData;
 import com.riquelmemr.financetrack.data.TokenData;
 import com.riquelmemr.financetrack.exception.AuthenticationException;
@@ -92,33 +93,35 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     }
 
     private AuthenticationData generateAuthenticationTokens(UserModel user) {
-        String accessToken = jwtService.generateToken(user.getUsername());
-        DecodedJWT decodedToken = jwtService.decodeToken(accessToken);
-
+        GeneratedAccessToken generatedAccessToken = jwtService.generateToken(user.getUsername());
         RefreshTokenData generatedRefreshToken = refreshTokenService.generateToken(user);
 
-        AccessTokenModel accessTokenModel = new AccessTokenModel();
-        accessTokenModel.setUser(user);
-        accessTokenModel.setToken(hashGenerator.generate(accessToken));
-        accessTokenModel.setRevoked(false);
-        accessTokenModel.setExpiresAt(decodedToken.getExpiresAtAsInstant());
-        accessTokenModel.setRefreshToken(generatedRefreshToken.getRefreshToken());
+        AccessTokenModel accessTokenModel = buildAccessTokenModel(
+                user, generatedAccessToken, generatedRefreshToken.getRefreshToken());
 
         accessTokenRepository.save(accessTokenModel);
 
-        TokenData accessTokenData = TokenData.builder()
-                .withTokenValue(accessToken)
-                .withExpiresAt(accessTokenModel.getExpiresAt())
-                .build();
-
-        TokenData refreshTokenData = TokenData.builder()
-                .withTokenValue(generatedRefreshToken.getToken())
-                .withExpiresAt(generatedRefreshToken.getRefreshToken().getExpiresAt())
-                .build();
-
         return AuthenticationData.builder()
-                .withAccessToken(accessTokenData)
-                .withRefreshToken(refreshTokenData)
+                .withAccessToken(TokenData.builder()
+                        .withTokenValue(generatedAccessToken.getValue())
+                        .withExpiresAt(generatedAccessToken.getExpiresAt())
+                        .build())
+                .withRefreshToken(TokenData.builder()
+                        .withTokenValue(generatedRefreshToken.getToken())
+                        .withExpiresAt(generatedRefreshToken.getRefreshToken().getExpiresAt())
+                        .build())
                 .build();
+    }
+
+    private AccessTokenModel buildAccessTokenModel(UserModel user, GeneratedAccessToken accessToken, RefreshTokenModel refreshTokenModel) {
+        AccessTokenModel accessTokenModel = new AccessTokenModel();
+
+        accessTokenModel.setUser(user);
+        accessTokenModel.setToken(hashGenerator.generate(accessToken.getValue()));
+        accessTokenModel.setRevoked(false);
+        accessTokenModel.setExpiresAt(accessToken.getExpiresAt());
+        accessTokenModel.setRefreshToken(refreshTokenModel);
+
+        return accessTokenModel;
     }
 }
