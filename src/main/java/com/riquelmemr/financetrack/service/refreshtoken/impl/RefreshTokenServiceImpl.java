@@ -70,6 +70,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return refreshTokenModel;
     }
 
+    @Override
+    @Transactional
+    public void deleteExpiredAndRevoked(Instant threshold) {
+        refreshTokenRepository.deleteExpiredOrRevoked(threshold);
+    }
+
     private RefreshTokenModel findByToken(String refreshToken) {
         String refreshTokenHash = hashGenerator.generate(refreshToken);
 

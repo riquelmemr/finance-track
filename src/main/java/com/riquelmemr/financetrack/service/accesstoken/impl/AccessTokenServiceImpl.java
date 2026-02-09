@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.time.Instant;
 
 import static java.util.Objects.isNull;
 
@@ -74,14 +74,8 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     @Override
     @Transactional
-    public void deleteToken(UserModel user) {
-        Optional<AccessTokenModel> accessTokenOpt = accessTokenRepository.findByUser(user);
-
-        if (accessTokenOpt.isEmpty()) {
-            throw new ModelNotFoundException("Token not found.");
-        }
-
-        accessTokenRepository.delete(accessTokenOpt.get());
+    public void deleteExpiredAndRevoked(Instant threshold) {
+        accessTokenRepository.deleteExpiredOrRevoked(threshold);
     }
 
     @Override

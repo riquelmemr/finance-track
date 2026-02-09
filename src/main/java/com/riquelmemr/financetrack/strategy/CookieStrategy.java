@@ -1,4 +1,4 @@
-package com.riquelmemr.financetrack.strategy.cookie;
+package com.riquelmemr.financetrack.strategy;
 
 import com.riquelmemr.financetrack.enums.Cookie;
 import org.springframework.http.ResponseCookie;

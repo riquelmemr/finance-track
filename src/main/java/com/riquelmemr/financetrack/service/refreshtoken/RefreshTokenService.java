@@ -4,6 +4,8 @@ import com.riquelmemr.financetrack.data.RefreshTokenData;
 import com.riquelmemr.financetrack.model.RefreshTokenModel;
 import com.riquelmemr.financetrack.model.UserModel;
 
+import java.time.Instant;
+
 public interface RefreshTokenService {
 
     RefreshTokenData generateToken(UserModel user);
@@ -12,4 +14,5 @@ public interface RefreshTokenService {
 
     RefreshTokenModel validateToken(String refreshToken);
 
+    void deleteExpiredAndRevoked(Instant threshold);
 }

@@ -3,7 +3,7 @@ package com.riquelmemr.financetrack.factory.impl;
 import com.riquelmemr.financetrack.enums.Cookie;
 import com.riquelmemr.financetrack.exception.StrategyNotFoundException;
 import com.riquelmemr.financetrack.factory.CookieFactory;
-import com.riquelmemr.financetrack.strategy.cookie.CookieStrategy;
+import com.riquelmemr.financetrack.strategy.CookieStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

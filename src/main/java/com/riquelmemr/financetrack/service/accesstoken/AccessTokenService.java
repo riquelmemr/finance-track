@@ -4,7 +4,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.riquelmemr.financetrack.data.AuthenticationData;
 import com.riquelmemr.financetrack.model.AccessTokenModel;
 import com.riquelmemr.financetrack.model.RefreshTokenModel;
-import com.riquelmemr.financetrack.model.UserModel;
+
+import java.time.Instant;
 
 public interface AccessTokenService {
 
@@ -18,5 +19,5 @@ public interface AccessTokenService {
 
     void revokeAllByRefreshToken(RefreshTokenModel refreshTokenModel);
 
-    void deleteToken(UserModel user);
+    void deleteExpiredAndRevoked(Instant threshold);
 }

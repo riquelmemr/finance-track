@@ -1,8 +1,8 @@
-package com.riquelmemr.financetrack.strategy.cookie.impl;
+package com.riquelmemr.financetrack.strategy.impl;
 
 import com.riquelmemr.financetrack.data.RefreshTokenData;
 import com.riquelmemr.financetrack.enums.Cookie;
-import com.riquelmemr.financetrack.strategy.cookie.CookieStrategy;
+import com.riquelmemr.financetrack.strategy.CookieStrategy;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
