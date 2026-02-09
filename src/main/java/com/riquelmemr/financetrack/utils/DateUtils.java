@@ -1,5 +1,7 @@
 package com.riquelmemr.financetrack.utils;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -11,5 +13,9 @@ public class DateUtils {
 
     public static String toBrazilDateFormat(LocalDateTime localDateTime) {
         return localDateTime.format(brazilDateFormatter);
+    }
+
+    public static long getSecondsBetweenDates(Instant from, Instant to) {
+        return Duration.between(from, to).getSeconds();
     }
 }

@@ -1,5 +1,6 @@
 package com.riquelmemr.financetrack.controller;
 
+import com.riquelmemr.financetrack.data.AuthenticationResult;
 import com.riquelmemr.financetrack.dto.request.AuthRequest;
 import com.riquelmemr.financetrack.dto.request.RegisterUserRequest;
 import com.riquelmemr.financetrack.dto.response.AuthResponse;
@@ -10,10 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,8 +25,8 @@ public class AuthController extends BaseController {
 
     @PostMapping("/token")
     public ResponseEntity<DataWrapperResponse<AuthResponse>> authenticate(@RequestBody AuthRequest authRequest) {
-        AuthResponse response = authFacade.authenticate(authRequest);
-        return handleResponse(HttpStatus.OK, response, USER_LOGGED_SUCCESSFULLY_MESSAGE);
+        AuthenticationResult data = authFacade.authenticate(authRequest);
+        return handleResponse(data.getAuthResponse(), USER_LOGGED_SUCCESSFULLY_MESSAGE, data.getRefreshTokenCookie().toString());
     }
 
     @PostMapping("/register")
@@ -42,4 +40,11 @@ public class AuthController extends BaseController {
         authFacade.logout();
         return handleNoContentResponse();
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<DataWrapperResponse<AuthResponse>> refresh(@CookieValue(name = "refresh_token") String refreshToken) {
+        AuthenticationResult result = authFacade.refresh(refreshToken);
+        return handleResponse(result.getAuthResponse(), USER_LOGGED_SUCCESSFULLY_MESSAGE, result.getRefreshTokenCookie().toString());
+    }
+
 }

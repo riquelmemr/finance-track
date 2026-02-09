@@ -3,6 +3,7 @@ package com.riquelmemr.financetrack.security.handler;
 import com.riquelmemr.financetrack.annotation.MetadataException;
 import com.riquelmemr.financetrack.dto.response.ErrorResponse;
 import com.riquelmemr.financetrack.exception.BusinessException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
+    @Order(1)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
         MetadataException metadata = ex.getClass().getAnnotation(MetadataException.class);
 
@@ -31,6 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
+    @Order(2)
     public ResponseEntity<ErrorResponse> handleRuntimeException(BusinessException ex) {
         final int status = HttpStatus.INTERNAL_SERVER_ERROR.value();
         final String error = ex.getClass().getSimpleName();

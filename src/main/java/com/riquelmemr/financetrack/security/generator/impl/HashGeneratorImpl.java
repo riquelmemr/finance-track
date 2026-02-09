@@ -7,12 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Base64;
 
-import static java.util.Objects.isNull;
-
 @Component
 public class HashGeneratorImpl implements HashGenerator {
-
-    private static final String PIPE = "|";
 
     @Override
     public String generate(String value) {
@@ -27,15 +23,5 @@ public class HashGeneratorImpl implements HashGenerator {
         } catch (Exception e) {
             throw new RuntimeException("An occurred error when generate hash", e);
         }
-    }
-
-    private String normalize(String userAgent) {
-        if (isNull(userAgent)) return "unknown";
-
-        return userAgent
-                .replaceAll("Chrome/[0-9.]+", "Chrome")
-                .replaceAll("Safari/[0-9.]+", "Safari")
-                .replaceAll("Firefox/[0-9.]+", "Firefox")
-                .toLowerCase();
     }
 }

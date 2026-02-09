@@ -72,6 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryModel update(Long id, UpdateCategoryRequest request, UserModel user) {
         CategoryModel category = findById(id, user);
 

@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.riquelmemr.financetrack.config.JwtConfig;
+import com.riquelmemr.financetrack.data.GeneratedAccessToken;
 import com.riquelmemr.financetrack.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,29 +19,25 @@ public class JwtServiceImpl implements JwtService {
     private final JwtConfig jwtConfig;
 
     @Override
-    public String generateToken(String username) {
+    public GeneratedAccessToken generateToken(String username) {
         try {
-            return JWT.create()
+            String token = JWT.create()
                     .withIssuer(jwtConfig.getIssuer())
                     .withSubject(username)
-                    .withExpiresAt(getExpirationDate())
+                    .withExpiresAt(getExpiration())
                     .sign(jwtConfig.algorithm());
+
+            DecodedJWT decoded = JWT.decode(token);
+
+            return new GeneratedAccessToken(token, decoded.getExpiresAtAsInstant());
         } catch (JWTCreationException exception) {
             throw new JWTCreationException("An error occurred when generate token: ", exception);
         }
     }
 
     @Override
-    public String getSubjectFromToken(String token) {
-        try {
-            return JWT.require(jwtConfig.algorithm())
-                    .withIssuer(jwtConfig.getIssuer())
-                    .build()
-                    .verify(token)
-                    .getSubject();
-        } catch (JWTVerificationException exception){
-            throw new JWTVerificationException("Token invalid or expired.");
-        }
+    public Instant getRefreshTokenExpiration() {
+        return Instant.now().plusSeconds(jwtConfig.getRefreshExpiration());
     }
 
     @Override
@@ -55,7 +52,7 @@ public class JwtServiceImpl implements JwtService {
         }
     }
 
-    private Instant getExpirationDate() {
-        return Instant.now().plusSeconds(jwtConfig.getExpiration());
+    private Instant getExpiration() {
+        return Instant.now().plusSeconds(jwtConfig.getAccessExpiration());
     }
 }

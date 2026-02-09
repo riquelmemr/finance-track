@@ -1,6 +1,7 @@
 package com.riquelmemr.financetrack.controller;
 
 import com.riquelmemr.financetrack.dto.response.DataWrapperResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -21,6 +22,17 @@ public class BaseController {
                 .build();
 
         return ResponseEntity.status(status).body(data);
+    }
+
+    protected <R> ResponseEntity<DataWrapperResponse<R>> handleResponse(R body, String message, String cookie) {
+        DataWrapperResponse<R> data = DataWrapperResponse.<R>builder()
+                .withData(body)
+                .withMessage(message)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie)
+                .body(data);
     }
 
     protected ResponseEntity<Void> handleNoContentResponse() {
