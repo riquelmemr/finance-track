@@ -38,3 +38,6 @@ build/
 *.tfstate.*
 crash.log
 terraform.rc
+
+### Project ###
+infra/
