@@ -86,7 +86,7 @@ jobs:
             docker run -d \
               --name ${{ github.event.repository.name }} \
               --env-file app.env \
-              -p 8080:8080 \
+              -p 80:8080 \
               ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
             
             echo "Cleaning .env"
