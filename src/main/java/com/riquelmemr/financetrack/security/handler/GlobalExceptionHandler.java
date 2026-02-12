@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     @Order(2)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(BusinessException ex) {
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
         final int status = HttpStatus.INTERNAL_SERVER_ERROR.value();
         final String error = ex.getClass().getSimpleName();
 
