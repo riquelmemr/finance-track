@@ -72,7 +72,7 @@ jobs:
 
       - name: Generate SSH key
         run: |
-          ssh-keygen -t rsa -b 4096 -f github-actions-key -N ""
+          ssh-keygen -t rsa -b 4096 -m PEM -f github-actions-key -N ""
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
