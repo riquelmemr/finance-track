@@ -77,38 +77,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Create SSM Commands file
-        run: |
-          echo "Generating SSM params..."
-
-          echo '{ "commands": [' > ssm_params.json
-
-          echo "\"docker pull ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest\", " >> ssm_params.json
-          echo "\"docker rm -f ${{ github.event.repository.name }} || true\", " >> ssm_params.json
-          
-          echo "\"echo 'Creating app.env'\", " >> ssm_params.json
-
-          while IFS= read -r line; do
-            echo "\"echo $line >> app.env\", " >> ssm_params.json
-          done <<< "${{ secrets.ENVIRONMENT_VARIABLES }}"
-
-          echo "\"docker run -d --name ${{ github.event.repository.name }} --env-file app.env -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest\", " >> ssm_params.json
-          echo "\"rm app.env\"" >> ssm_params.json
-
-          echo '] }' >> ssm_params.json
-
-          echo "Generated SSM parameters file:"
-          cat ssm_params.json
-
       - name: Deploy via AWS SSM
         run: |
-          COMMAND_ID=$(aws ssm send-command \
+          COMMANDS=$(cat <<EOF
+            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+            docker stop ${{ github.event.repository.name }} || true
+            docker rm ${{ github.event.repository.name }} || true
+            echo "${{ secrets.ENVIRONMENT_VARIABLES }}" > app.env
+            docker run -d --name ${{ github.event.repository.name }} --env-file app.env -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+            rm app.env
+          EOF
+          )
+          
+          COMMAND_ID=(aws ssm send-command \
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --comment "Deploy API" \
-            --parameters file://ssm_params.json \
-            --query "Command.CommandId" \
-            --output text)
+            --comment "Deploy API container" \
+            --parameters "commands=[$(echo "$COMMANDS" | jq -R . | jq -s -c . | sed 's/^\[//;s/]$//')]" \
+            --output text \
+            --query "Command.CommandId")
+          
+          echo "Command ID: $COMMAND_ID"
 
           echo "Waiting for execution..."
           aws ssm wait command-executed \
