@@ -67,6 +67,9 @@ jobs:
     needs: docker-publish
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Generate SSH key
         run: |
           ssh-keygen -t rsa -b 4096 -f github-actions-key -N ""
@@ -78,7 +81,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Push temporary EC2 SSH key
+      - name: Push SSH key via Instance Connect
         run: |
           EC2_AZ=$(aws ec2 describe-instances \
           --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
