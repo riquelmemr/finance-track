@@ -4,6 +4,7 @@ import com.riquelmemr.financetrack.data.AuthenticationData;
 import com.riquelmemr.financetrack.dto.request.AuthRequest;
 import com.riquelmemr.financetrack.dto.request.RegisterUserRequest;
 import com.riquelmemr.financetrack.enums.Role;
+import com.riquelmemr.financetrack.exception.BadCredentialsException;
 import com.riquelmemr.financetrack.exception.ModelAlreadyExistsException;
 import com.riquelmemr.financetrack.exception.ResourceNotAllowedException;
 import com.riquelmemr.financetrack.model.AccessTokenModel;
@@ -16,6 +17,7 @@ import com.riquelmemr.financetrack.service.accesstoken.AccessTokenService;
 import com.riquelmemr.financetrack.service.auth.AuthService;
 import com.riquelmemr.financetrack.service.refreshtoken.RefreshTokenService;
 import com.riquelmemr.financetrack.service.role.RoleService;
+import com.riquelmemr.financetrack.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
     private final AccessTokenService accessTokenService;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
+    private final UserService userService;
 
     @Override
     @Transactional
@@ -70,6 +73,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthenticationData authenticate(AuthRequest authRequest) {
+        UserModel user = userService.findByUsername(authRequest.getUsername());
+
+        if (isNull(user)) {
+            throw new BadCredentialsException("Username or password is invalid.");
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );

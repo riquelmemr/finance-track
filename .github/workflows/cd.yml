@@ -67,12 +67,39 @@ jobs:
     needs: docker-publish
 
     steps:
-      - name: Deploy on EC2
+      - name: Generate SSH key
+        run: |
+          ssh-keygen -t rsa -b 4096 -f github-actions-key -N ""
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Push temporary EC2 SSH key
+        run: |
+          EC2_AZ=$(aws ec2 describe-instances \
+          --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
+          --query "Reservations[0].Instances[0].Placement.AvailabilityZone" \
+          --output text)
+          
+          aws ec2-instance-connect send-ssh-public-key \
+            --instance-id ${{ secrets.EC2_INSTANCE_ID }} \
+            --availability-zone $EC2_AZ \
+            --instance-os-user ${{ secrets.EC2_USER }} \
+            --ssh-public-key file://github-actions-key.pub
+
+      - name: Fix SSH key permissions
+        run: chmod 600 github-actions-key
+
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: github-actions-key
           script: |
             echo "Pulling application latest Docker image"
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
