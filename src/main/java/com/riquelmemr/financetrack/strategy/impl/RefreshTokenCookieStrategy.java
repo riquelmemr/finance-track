@@ -16,7 +16,7 @@ public class RefreshTokenCookieStrategy implements CookieStrategy<RefreshTokenDa
     public ResponseCookie create(RefreshTokenData data) {
         long maxAge = Duration.between(Instant.now(), data.getExpiresAt()).getSeconds();
 
-        return ResponseCookie.from(getCookie().getKey(), data.getToken())
+        return ResponseCookie.from(getCookie().getKey(), data.getTokenValue())
                 .httpOnly(true)
                 .secure(false)
                 .maxAge(maxAge)

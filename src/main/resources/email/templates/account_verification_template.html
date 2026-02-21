@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Conta - Finance Track</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; padding: 0; background-color: #121212; font-family: 'Montserrat', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #121212; padding: 40px 0;">
+    <tr>
+        <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #1E1E1E; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0px 4px 20px rgba(0,0,0,0.5);">
+
+                <tr>
+                    <td align="center" style="padding: 40px 0 20px 0;">
+                        <h1 style="color: #EDEDED; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -1px;">
+                            Finance<span style="color: #4FC3F7;">Track</span>
+                        </h1>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding: 20px 40px;">
+                        <h2 style="color: #EDEDED; font-size: 22px; font-weight: 600; margin-bottom: 16px;">
+                            Quase lá! Confirme seu e-mail.
+                        </h2>
+                        <p style="color: #B0B0B0; font-size: 15px; line-height: 24px; margin-bottom: 30px;">
+                            Olá, <strong>${name}</strong>!<br><br>
+                            Obrigado por se juntar ao Finance Track. Para começar a organizar sua vida financeira e atingir seus objetivos, precisamos apenas que você confirme seu endereço de e-mail clicando no botão abaixo:
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding: 10px 40px 40px 40px;">
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td align="center" bgcolor="#4FC3F7" style="border-radius: 12px;">
+                                    <a href="${verification_link}" target="_blank" style="padding: 16px 32px; font-size: 16px; font-weight: 600; color: #0D1117; text-decoration: none; display: inline-block;">
+                                        Confirmar minha conta
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding: 0 40px 40px 40px; border-top: 1px solid rgba(255,255,255,0.08);">
+                        <p style="color: #707070; font-size: 13px; line-height: 20px; margin-top: 30px; text-align: center;">
+                            Se o botão acima não funcionar, copie e cole o link abaixo no seu navegador:<br>
+                            <a href="${verification_link}" style="color: #4FC3F7; text-decoration: none;">${verification_link}</a>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin-top: 20px;">
+                <tr>
+                    <td align="center" style="color: #707070; font-size: 12px; padding: 20px;">
+                        <p style="margin: 0;">© 2026 Finance Track. Todos os direitos reservados.</p>
+                        <p style="margin: 5px 0 0 0;">Você recebeu este e-mail porque se cadastrou em nossa plataforma.</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

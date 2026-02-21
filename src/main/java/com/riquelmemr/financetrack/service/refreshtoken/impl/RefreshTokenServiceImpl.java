@@ -41,7 +41,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
 
         return RefreshTokenData.builder()
-                .withToken(rawRefreshToken)
+                .withTokenValue(rawRefreshToken)
                 .withExpiresAt(refreshExpiresAt)
                 .withRefreshToken(refreshToken)
                 .build();

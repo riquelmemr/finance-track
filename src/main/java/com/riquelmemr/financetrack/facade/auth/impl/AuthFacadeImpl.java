@@ -58,7 +58,7 @@ public class AuthFacadeImpl implements AuthFacade {
         return cookieService.create(
                 Cookie.REFRESH_TOKEN,
                 RefreshTokenData.builder()
-                        .withToken(data.getRefreshToken().getTokenValue())
+                        .withTokenValue(data.getRefreshToken().getTokenValue())
                         .withExpiresAt(data.getRefreshToken().getExpiresAt())
                         .build());
     }

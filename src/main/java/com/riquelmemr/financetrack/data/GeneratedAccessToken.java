@@ -8,6 +8,6 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 public class GeneratedAccessToken {
-    private String value;
+    private String tokenValue;
     private Instant expiresAt;
 }

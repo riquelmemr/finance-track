@@ -97,11 +97,11 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
         return AuthenticationData.builder()
                 .withAccessToken(TokenData.builder()
-                        .withTokenValue(generatedAccessToken.getValue())
+                        .withTokenValue(generatedAccessToken.getTokenValue())
                         .withExpiresAt(generatedAccessToken.getExpiresAt())
                         .build())
                 .withRefreshToken(TokenData.builder()
-                        .withTokenValue(generatedRefreshToken.getToken())
+                        .withTokenValue(generatedRefreshToken.getTokenValue())
                         .withExpiresAt(generatedRefreshToken.getRefreshToken().getExpiresAt())
                         .build())
                 .build();
@@ -111,7 +111,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         AccessTokenModel accessTokenModel = new AccessTokenModel();
 
         accessTokenModel.setUser(user);
-        accessTokenModel.setToken(hashGenerator.generate(accessToken.getValue()));
+        accessTokenModel.setToken(hashGenerator.generate(accessToken.getTokenValue()));
         accessTokenModel.setRevoked(false);
         accessTokenModel.setExpiresAt(accessToken.getExpiresAt());
         accessTokenModel.setRefreshToken(refreshTokenModel);

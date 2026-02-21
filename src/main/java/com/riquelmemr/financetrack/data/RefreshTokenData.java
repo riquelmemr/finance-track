@@ -9,7 +9,7 @@ import java.time.Instant;
 @Data
 @Builder(setterPrefix = "with")
 public class RefreshTokenData {
-    private String token;
+    private String tokenValue;
     private Instant expiresAt;
     private RefreshTokenModel refreshToken;
 }

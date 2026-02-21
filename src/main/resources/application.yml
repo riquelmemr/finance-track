@@ -18,6 +18,18 @@ spring:
         jdbc:
           time_zone: UTC
 
+  mail:
+    host: smtp.gmail.com
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 server:
   port: 8080
   shutdown: graceful
@@ -38,3 +50,7 @@ jwt:
     expiration: 86400
   refresh-token:
     expiration: 604800
+
+mail:
+  sender-name: FinanceTrack
+  from: ${MAIL_FROM}

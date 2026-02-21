@@ -2,7 +2,6 @@ package com.riquelmemr.financetrack.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,6 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "tb_user")
-@Builder(setterPrefix = "with")
 @AllArgsConstructor
 public class UserModel extends ItemModel {
 
@@ -46,6 +44,13 @@ public class UserModel extends ItemModel {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryModel> categories = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "account_verification_id", referencedColumnName = "id")
+    private AccountVerificationModel accountVerification;
+
+    @Column(nullable = false)
+    private boolean verified;
 
     public UserModel() {
         this.enabled = true;

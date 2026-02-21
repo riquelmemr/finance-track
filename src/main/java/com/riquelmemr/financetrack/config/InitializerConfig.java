@@ -88,6 +88,7 @@ public class InitializerConfig implements CommandLineRunner {
         userModel.setName(username);
         userModel.setRoles(List.of(adminRole));
         userModel.setEnabled(true);
+        userModel.setVerified(true);
 
         userRepository.save(userModel);
         log.info("Administrator created successfully.");

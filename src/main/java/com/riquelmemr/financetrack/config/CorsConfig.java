@@ -12,7 +12,7 @@ import java.util.List;
 public class CorsConfig {
 
     private static final List<String> ALLOWED_ORIGINS = List.of(
-            "http://localhost:5173/"
+            "http://localhost:5173"
     );
 
     @Bean
@@ -22,6 +22,7 @@ public class CorsConfig {
         config.setAllowCredentials(false);
         config.setAllowedOrigins(ALLOWED_ORIGINS);
         config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
 
         config.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"

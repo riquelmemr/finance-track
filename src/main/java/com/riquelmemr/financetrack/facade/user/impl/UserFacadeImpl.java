@@ -23,4 +23,14 @@ public class UserFacadeImpl implements UserFacade {
         UserModel user = userService.findByUsername(requester.getUsername());
         return userResponseConverter.convert(user);
     }
+
+    @Override
+    public void resendAccountVerification(String email) {
+        userService.resendAccountVerification(email);
+    }
+
+    @Override
+    public void verifyAccount(String token) {
+        userService.verifyAccount(token);
+    }
 }

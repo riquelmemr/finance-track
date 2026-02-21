@@ -1,19 +1,19 @@
 package com.riquelmemr.financetrack.service.auth.impl;
 
 import com.riquelmemr.financetrack.data.AuthenticationData;
+import com.riquelmemr.financetrack.data.user.CreateUserData;
 import com.riquelmemr.financetrack.dto.request.AuthRequest;
 import com.riquelmemr.financetrack.dto.request.RegisterUserRequest;
 import com.riquelmemr.financetrack.enums.Role;
+import com.riquelmemr.financetrack.exception.AccountVerificationException;
 import com.riquelmemr.financetrack.exception.BadCredentialsException;
 import com.riquelmemr.financetrack.exception.ModelAlreadyExistsException;
 import com.riquelmemr.financetrack.exception.ResourceNotAllowedException;
-import com.riquelmemr.financetrack.model.AccessTokenModel;
-import com.riquelmemr.financetrack.model.RefreshTokenModel;
-import com.riquelmemr.financetrack.model.RoleModel;
-import com.riquelmemr.financetrack.model.UserModel;
+import com.riquelmemr.financetrack.model.*;
 import com.riquelmemr.financetrack.repository.UserRepository;
 import com.riquelmemr.financetrack.security.userdetails.UserDetailsImpl;
 import com.riquelmemr.financetrack.service.accesstoken.AccessTokenService;
+import com.riquelmemr.financetrack.service.accountverification.AccountVerificationService;
 import com.riquelmemr.financetrack.service.auth.AuthService;
 import com.riquelmemr.financetrack.service.refreshtoken.RefreshTokenService;
 import com.riquelmemr.financetrack.service.role.RoleService;
@@ -21,10 +21,10 @@ import com.riquelmemr.financetrack.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,16 +39,18 @@ public class AuthServiceImpl implements AuthService {
 
     private final RoleService roleService;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final AccessTokenService accessTokenService;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
+    private final Converter<CreateUserData, UserModel> createUserConverter;
     private final UserService userService;
+    private final AccountVerificationService accountVerificationService;
 
     @Override
     @Transactional
     public UserModel register(RegisterUserRequest request, UserModel adminUser) {
-        UserModel userAlreadyExists = userRepository.findByUsernameOrEmail(request.getUsername(), request.getEmail());
+        UserModel userAlreadyExists = userRepository
+                .findByUsernameOrEmail(request.getUsername(), request.getEmail());
 
         if (nonNull(userAlreadyExists)) {
             throw new ModelAlreadyExistsException("User with username or e-mail already exists");
@@ -60,7 +62,15 @@ public class AuthServiceImpl implements AuthService {
             throw new ResourceNotAllowedException("You cannot create an admin user.");
         }
 
-        UserModel user = buildUserModel(request, role);
+        CreateUserData createUserData = new CreateUserData(request, List.of(role));
+        UserModel user = createUserConverter.convert(createUserData);
+
+        if (isNull(user)) {
+            throw new IllegalArgumentException("Failed to create user from request data.");
+        }
+
+        AccountVerificationModel accountVerification = accountVerificationService.create(user);
+        user.setAccountVerification(accountVerification);
 
         return userRepository.save(user);
     }
@@ -77,6 +87,10 @@ public class AuthServiceImpl implements AuthService {
 
         if (isNull(user)) {
             throw new BadCredentialsException("Username or password is invalid.");
+        }
+
+        if (!user.isVerified()) {
+            throw new AccountVerificationException("Account is not verified.");
         }
 
         Authentication authentication = authenticationManager.authenticate(
@@ -108,16 +122,5 @@ public class AuthServiceImpl implements AuthService {
 
     private boolean isAdminRole(RoleModel role) {
         return Role.ADMIN.name().equals(role.getName());
-    }
-
-    private UserModel buildUserModel(RegisterUserRequest request, RoleModel role) {
-        return UserModel.builder()
-                .withEmail(request.getEmail())
-                .withName(request.getName())
-                .withUsername(request.getUsername())
-                .withEnabled(true)
-                .withPassword(passwordEncoder.encode(request.getPassword()))
-                .withRoles(List.of(role))
-                .build();
     }
 }
