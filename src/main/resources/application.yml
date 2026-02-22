@@ -53,4 +53,4 @@ jwt:
 
 mail:
   sender-name: FinanceTrack
-  from: ${MAIL_FROM}
+  from: ${MAIL_FROM:""}
