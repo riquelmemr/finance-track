@@ -10,7 +10,7 @@ import java.io.IOException;
 @Component
 public class AccountVerificationEmailContext extends AbstractEmailContext<AccountVerificationEmailData> {
 
-    private static final String VERIFY_ACCOUNT_END_POINT = "/users/verify-account?token=";
+    private static final String VERIFY_ACCOUNT_END_POINT = "/verify-account/";
 
     @Override
     public String getHtmlContent(AccountVerificationEmailData data) {

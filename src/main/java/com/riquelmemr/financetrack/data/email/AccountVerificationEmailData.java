@@ -14,7 +14,7 @@ public class AccountVerificationEmailData extends EmailData {
     public AccountVerificationEmailData(String name, String to, String verificationToken) {
         super(to);
         this.name = name;
-        this.baseUrl = "http://localhost:8080/api/v1";
+        this.baseUrl = "http://localhost:5173";
         this.verificationToken = verificationToken;
     }
 }

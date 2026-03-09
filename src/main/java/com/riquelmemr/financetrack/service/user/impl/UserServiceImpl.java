@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -48,11 +47,9 @@ public class UserServiceImpl implements UserService {
             throw new AccountVerificationException("Account with e-mail " + email + " is already verified");
         }
 
-        if (nonNull(user.getAccountVerification())) {
-            accountVerificationService.delete(user.getAccountVerification());
-        }
-
-        accountVerificationService.create(user);
+        AccountVerificationModel accountVerification = accountVerificationService.create(user);
+        user.setAccountVerification(accountVerification);
+        userRepository.save(user);
     }
 
     @Override

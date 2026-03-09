@@ -37,6 +37,8 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    private static final int MAX_AUTHENTICATION_TOKENS_PER_USER = 5;
+
     private final RoleService roleService;
     private final UserRepository userRepository;
     private final AccessTokenService accessTokenService;
@@ -71,6 +73,8 @@ public class AuthServiceImpl implements AuthService {
 
         AccountVerificationModel accountVerification = accountVerificationService.create(user);
         user.setAccountVerification(accountVerification);
+
+        verifyQuantityOfAuthenticationTokens(user);
 
         return userRepository.save(user);
     }
@@ -119,6 +123,16 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenService.revokeToken(accessTokenModel.getRefreshToken());
     }
 
+
+    private void verifyQuantityOfAuthenticationTokens(UserModel user) {
+        List<AccessTokenModel> activeTokens = accessTokenService.findAllActiveByUser(user);
+
+        if (activeTokens.size() > MAX_AUTHENTICATION_TOKENS_PER_USER) {
+            AccessTokenModel oldestToken = activeTokens.get(0);
+            accessTokenService.revokeToken(oldestToken);
+            refreshTokenService.revokeToken(oldestToken.getRefreshToken());
+        }
+    }
 
     private boolean isAdminRole(RoleModel role) {
         return Role.ADMIN.name().equals(role.getName());

@@ -8,13 +8,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 public interface AccessTokenRepository extends JpaRepository<AccessTokenModel, Long> {
 
     Optional<AccessTokenModel> findByToken(String token);
-
-    Optional<AccessTokenModel> findByUser(UserModel user);
 
     @Modifying
     @Query("""
@@ -31,4 +30,12 @@ public interface AccessTokenRepository extends JpaRepository<AccessTokenModel, L
         OR (revoked = true)
     """)
     void deleteExpiredOrRevoked(Instant threshold);
+
+    @Query("""
+    SELECT AccessTokenModel FROM AccessTokenModel
+    WHERE user = :user
+        AND revoked = false
+        AND expiresAt > CURRENT_TIMESTAMP
+    """)
+    List<AccessTokenModel> findAllActiveByUser(UserModel user);
 }

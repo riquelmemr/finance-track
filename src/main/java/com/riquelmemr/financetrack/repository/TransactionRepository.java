@@ -31,8 +31,8 @@ public interface TransactionRepository
 
     @Query("""
     SELECT new com.riquelmemr.financetrack.data.TransactionSummaryData(
-        SUM(CASE WHEN t.type = 'INCOME' THEN t.amount END),
-        SUM(CASE WHEN t.type = 'EXPENSE' THEN t.amount END),
+        CAST(COALESCE(SUM(CASE WHEN t.type = 'INCOME' THEN t.amount END), 0.0) AS BIGDECIMAL),
+        CAST(COALESCE(SUM(CASE WHEN t.type = 'EXPENSE' THEN t.amount END), 0.0) AS BIGDECIMAL),
         COUNT(t)
     )
     FROM TransactionModel t

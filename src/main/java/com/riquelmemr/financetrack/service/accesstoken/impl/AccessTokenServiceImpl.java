@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 
 import static java.util.Objects.isNull;
 
@@ -76,6 +77,11 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     @Transactional
     public void deleteExpiredAndRevoked(Instant threshold) {
         accessTokenRepository.deleteExpiredOrRevoked(threshold);
+    }
+
+    @Override
+    public List<AccessTokenModel> findAllActiveByUser(UserModel user) {
+        return accessTokenRepository.findAllActiveByUser(user);
     }
 
     @Override

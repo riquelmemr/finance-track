@@ -45,7 +45,7 @@ public class UserModel extends ItemModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryModel> categories = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_verification_id", referencedColumnName = "id")
     private AccountVerificationModel accountVerification;
 
