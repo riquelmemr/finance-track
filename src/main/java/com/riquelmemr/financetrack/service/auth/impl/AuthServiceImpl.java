@@ -123,7 +123,6 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenService.revokeToken(accessTokenModel.getRefreshToken());
     }
 
-
     private void verifyQuantityOfAuthenticationTokens(UserModel user) {
         List<AccessTokenModel> activeTokens = accessTokenService.findAllActiveByUser(user);
 
