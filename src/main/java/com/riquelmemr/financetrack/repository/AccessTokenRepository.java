@@ -17,25 +17,25 @@ public interface AccessTokenRepository extends JpaRepository<AccessTokenModel, L
 
     @Modifying
     @Query("""
-    UPDATE AccessTokenModel
-    SET revoked = true
-    WHERE refreshToken = :refreshTokenModel
+    UPDATE AccessTokenModel a
+    SET a.revoked = true
+    WHERE a.refreshToken = :refreshTokenModel
     """)
     void revokeAllByRefreshToken(RefreshTokenModel refreshTokenModel);
 
     @Modifying
     @Query("""
-    DELETE FROM AccessTokenModel
-    WHERE expiresAt < :threshold
-        OR (revoked = true)
+    DELETE FROM AccessTokenModel a
+    WHERE a.expiresAt < :threshold
+        OR (a.revoked = true)
     """)
     void deleteExpiredOrRevoked(Instant threshold);
 
     @Query("""
-    SELECT AccessTokenModel FROM AccessTokenModel
-    WHERE user = :user
-        AND revoked = false
-        AND expiresAt > CURRENT_TIMESTAMP
+    SELECT a FROM AccessTokenModel a
+    WHERE a.user = :user
+        AND a.revoked = false
+        AND a.expiresAt > CURRENT_TIMESTAMP
     """)
     List<AccessTokenModel> findAllActiveByUser(UserModel user);
 }

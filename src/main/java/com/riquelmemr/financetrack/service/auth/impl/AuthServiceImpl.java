@@ -58,11 +58,7 @@ public class AuthServiceImpl implements AuthService {
             throw new ModelAlreadyExistsException("User with username or e-mail already exists");
         }
 
-        RoleModel role = roleService.findByName(request.getRole().name());
-
-        if (isNull(adminUser) && isAdminRole(role)) {
-            throw new ResourceNotAllowedException("You cannot create an admin user.");
-        }
+        RoleModel role = validateRole(request.getRole(), adminUser);
 
         CreateUserData createUserData = new CreateUserData(request, List.of(role));
         UserModel user = createUserConverter.convert(createUserData);
@@ -74,9 +70,10 @@ public class AuthServiceImpl implements AuthService {
         AccountVerificationModel accountVerification = accountVerificationService.create(user);
         user.setAccountVerification(accountVerification);
 
-        verifyQuantityOfAuthenticationTokens(user);
+        UserModel userCreated = userRepository.save(user);
+        log.info("User with username {} created successfully.", userCreated.getUsername());
 
-        return userRepository.save(user);
+        return userCreated;
     }
 
     @Override
@@ -102,6 +99,8 @@ public class AuthServiceImpl implements AuthService {
         );
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        verifyQuantityOfAuthenticationTokens(user);
 
         return accessTokenService.generateToken(userDetails.getUsername());
     }
@@ -131,6 +130,16 @@ public class AuthServiceImpl implements AuthService {
             accessTokenService.revokeToken(oldestToken);
             refreshTokenService.revokeToken(oldestToken.getRefreshToken());
         }
+    }
+
+    private RoleModel validateRole(Role role, UserModel adminUser) {
+        RoleModel roleModel = roleService.findByName(role.name());
+
+        if (isNull(adminUser) && isAdminRole(roleModel)) {
+            throw new ResourceNotAllowedException("You cannot create an admin user.");
+        }
+
+        return roleModel;
     }
 
     private boolean isAdminRole(RoleModel role) {
