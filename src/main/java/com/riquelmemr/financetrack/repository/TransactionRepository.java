@@ -100,4 +100,17 @@ public interface TransactionRepository
             LocalDateTime from,
             LocalDateTime to
     );
+
+    @Query("""
+    SELECT COALESCE(SUM(t.amount), 0)
+    FROM TransactionModel t
+    WHERE t.user = :user
+      AND t.type = com.riquelmemr.financetrack.enums.TransactionType.EXPENSE
+      AND t.date BETWEEN :from AND :to
+    """)
+    BigDecimal findTotalExpense(
+            UserModel user,
+            LocalDateTime from,
+            LocalDateTime to
+    );
 }

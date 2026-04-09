@@ -1,5 +1,6 @@
 package com.riquelmemr.financetrack.facade.transactioninsight;
 
+import com.riquelmemr.financetrack.dto.response.AverageDailyExpenseResponse;
 import com.riquelmemr.financetrack.dto.response.ExpenseByCategoryResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionSummaryResponse;
 import com.riquelmemr.financetrack.dto.response.TransactionTimelineResponse;
@@ -15,4 +16,6 @@ public interface TransactionInsightFacade {
     List<ExpenseByCategoryResponse> findExpenseByCategory(LocalDate from, LocalDate to);
 
     List<TransactionTimelineResponse> findTimeline(TimelineGroupBy groupBy, LocalDate from, LocalDate to);
+
+    AverageDailyExpenseResponse findAverageDailyExpense(LocalDate from, LocalDate to);
 }

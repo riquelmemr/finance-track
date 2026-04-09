@@ -6,6 +6,7 @@ import com.riquelmemr.financetrack.data.TransactionTimelineData;
 import com.riquelmemr.financetrack.enums.TimelineGroupBy;
 import com.riquelmemr.financetrack.model.UserModel;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface TransactionInsightService {
     TransactionSummaryData findSummary(UserModel user, LocalDate from, LocalDate to);
 
     List<TransactionTimelineData> findTimeline(UserModel user, TimelineGroupBy groupBy, LocalDate from, LocalDate to);
+
+    BigDecimal findAverageDailyExpense(UserModel user, LocalDate from, LocalDate to);
 }

@@ -52,6 +52,16 @@ public class TransactionInsightServiceImpl implements TransactionInsightService 
         };
     }
 
+    @Override
+    public BigDecimal findAverageDailyExpense(UserModel user, LocalDate from, LocalDate to) {
+        BigDecimal totalExpense = transactionRepository
+                .findTotalExpense(user, from.atStartOfDay(), to.atTime(23, 59, 59));
+
+        long daysBetween = from.until(to).getDays() + 1;
+
+        return totalExpense.divide(BigDecimal.valueOf(daysBetween), 2, RoundingMode.HALF_UP);
+    }
+
     private List<TransactionTimelineData> findTimelineByMonth(UserModel user, LocalDate from, LocalDate to) {
         return transactionRepository
                 .findTimelineByMonth(user, from.atStartOfDay(), to.atTime(23, 59, 59))

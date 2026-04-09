@@ -105,4 +105,14 @@ public class TransactionController extends BaseController {
         List<TransactionTimelineResponse> response = transactionInsightFacade.findTimeline(groupBy, from, to);
         return handleResponse(HttpStatus.OK, response, TIMELINE_CALCULATED_SUCCESSFULLY_MESSAGE);
     }
+
+    @Secured("ROLE_BASIC")
+    @GetMapping("/insights/average-daily-expense")
+    public ResponseEntity<DataWrapperResponse<AverageDailyExpenseResponse>> findAverageDailyExpense(
+            @RequestParam(value = "from") LocalDate from,
+            @RequestParam(value = "to") LocalDate to
+    ) {
+        AverageDailyExpenseResponse response = transactionInsightFacade.findAverageDailyExpense(from, to);
+        return handleResponse(HttpStatus.OK, response, "Average daily expense calculated with successfully.");
+    }
 }
